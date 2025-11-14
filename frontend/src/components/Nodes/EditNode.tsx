@@ -12,7 +12,7 @@ import { DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHead
 import { Field } from "../ui/field"
 
 interface EditNodeProps { node: NodePublic }
-interface NodeUpdateForm { name: string; ip: string; description?: string; tags?: string; status?: string }
+interface NodeUpdateForm { name: string; ip: string; description?: string; tags?: string }
 
 const EditNode = ({ node }: EditNodeProps) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -60,9 +60,6 @@ const EditNode = ({ node }: EditNodeProps) => {
               </Field>
               <Field invalid={!!errors.tags} errorText={errors.tags?.message} label="Tags">
                 <Input {...register("tags")} placeholder="tag1,tag2" type="text" />
-              </Field>
-              <Field invalid={!!errors.status} errorText={errors.status?.message} label="Status">
-                <Input {...register("status")} placeholder="offline" type="text" />
               </Field>
             </VStack>
           </DialogBody>

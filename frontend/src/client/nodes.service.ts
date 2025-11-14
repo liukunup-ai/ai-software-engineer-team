@@ -26,11 +26,17 @@ export interface NodePublic {
   description?: string;
   tags?: string;
   status?: string;
+  last_heartbeat?: string;
 }
 
 export interface NodesPublic {
   data: NodePublic[];
   count: number;
+}
+
+export interface RegistrationKeyPublic {
+  registration_key: string;
+  docker_command: string;
 }
 
 export class NodesService {
@@ -71,6 +77,13 @@ export class NodesService {
     return __request(OpenAPI, {
       method: 'DELETE',
       url: `/api/v1/nodes/${id}`,
+    });
+  }
+
+  static getRegistrationKey(): CancelablePromise<RegistrationKeyPublic> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/api/v1/nodes/registration-key',
     });
   }
 }

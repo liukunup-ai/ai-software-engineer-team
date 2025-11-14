@@ -8,6 +8,7 @@ import { NodesService } from "@/client" // 需要在后端 OpenAPI 中生成对�
 import AddNode from "@/components/Nodes/AddNode"
 import EditNode from "@/components/Nodes/EditNode"
 import DeleteNode from "@/components/Nodes/DeleteNode"
+import RegistrationKeyDisplay from "@/components/Nodes/RegistrationKeyDisplay"
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@/components/ui/pagination.tsx"
 
 const nodesSearchSchema = z.object({ page: z.number().catch(1) })
@@ -52,22 +53,24 @@ function NodesTable() {
       <Table.Root size={{ base: "sm", md: "md" }}>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader w="sm">ID</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Name</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">IP</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Status</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Tags</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Actions</Table.ColumnHeader>
+            <Table.ColumnHeader w="xs">Name</Table.ColumnHeader>
+            <Table.ColumnHeader w="xs">IP</Table.ColumnHeader>
+            <Table.ColumnHeader w="24">Status</Table.ColumnHeader>
+            <Table.ColumnHeader w="xs">Last Heartbeat</Table.ColumnHeader>
+            <Table.ColumnHeader w="xs">Tags</Table.ColumnHeader>
+            <Table.ColumnHeader w="32">Actions</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {nodes.map((node) => (
             <Table.Row key={node.id} opacity={isPlaceholderData ? 0.5 : 1}>
-              <Table.Cell truncate maxW="sm">{node.id}</Table.Cell>
-              <Table.Cell truncate maxW="sm">{node.name}</Table.Cell>
-              <Table.Cell truncate maxW="sm">{node.ip}</Table.Cell>
-              <Table.Cell truncate maxW="sm" color={!node.status ? "gray" : "inherit"}>{node.status || "N/A"}</Table.Cell>
-              <Table.Cell truncate maxW="sm" color={!node.tags ? "gray" : "inherit"}>{node.tags || "N/A"}</Table.Cell>
+              <Table.Cell truncate maxW="xs">{node.name}</Table.Cell>
+              <Table.Cell truncate maxW="xs">{node.ip}</Table.Cell>
+              <Table.Cell truncate maxW="24" color={!node.status ? "gray" : "inherit"}>{node.status || "N/A"}</Table.Cell>
+              <Table.Cell truncate maxW="xs" fontSize="xs" color={!node.last_heartbeat ? "gray" : "inherit"}>
+                {node.last_heartbeat ? new Date(node.last_heartbeat).toLocaleString('zh-CN') : "从未连接"}
+              </Table.Cell>
+              <Table.Cell truncate maxW="xs" color={!node.tags ? "gray" : "inherit"}>{node.tags || "N/A"}</Table.Cell>
               <Table.Cell><EditNode node={node} /> <DeleteNode id={node.id} /></Table.Cell>
             </Table.Row>
           ))}
@@ -85,7 +88,10 @@ function NodesTable() {
 function Nodes() {
   return (
     <Container maxW="full">
-      <Heading size="lg" pt={12}>Nodes Management</Heading>
+      <Flex justifyContent="space-between" alignItems="center" pt={12}>
+        <Heading size="lg">Nodes Management</Heading>
+        <RegistrationKeyDisplay />
+      </Flex>
       <AddNode />
       <NodesTable />
     </Container>
