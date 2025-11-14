@@ -4,7 +4,7 @@ from typing import Any
 from sqlmodel import Session, select
 
 from app.core.security import get_password_hash, verify_password
-from app.models import Item, ItemCreate, User, UserCreate, UserUpdate
+from app.models import Item, ItemCreate, User, UserCreate, UserUpdate, Node, NodeCreate, NodeUpdate
 
 
 def create_user(*, session: Session, user_create: UserCreate) -> User:
@@ -52,3 +52,28 @@ def create_item(*, session: Session, item_in: ItemCreate, owner_id: uuid.UUID) -
     session.commit()
     session.refresh(db_item)
     return db_item
+
+# Node CRUD helpers
+def create_node(*, session: Session, node_in: NodeCreate) -> Node:
+    db_node = Node.model_validate(node_in)
+    session.add(db_node)
+    session.commit()
+    session.refresh(db_node)
+    return db_node
+
+def get_node(*, session: Session, node_id: uuid.UUID) -> Node | None:
+    return session.get(Node, node_id)
+
+def update_node(*, session: Session, db_node: Node, node_in: NodeUpdate) -> Node:
+    node_data = node_in.model_dump(exclude_unset=True)
+    db_node.sqlmodel_update(node_data)
+    session.add(db_node)
+    session.commit()
+    session.refresh(db_node)
+    return db_node
+
+def delete_node(*, session: Session, node_id: uuid.UUID) -> None:
+    db_node = session.get(Node, node_id)
+    if db_node:
+        session.delete(db_node)
+        session.commit()
