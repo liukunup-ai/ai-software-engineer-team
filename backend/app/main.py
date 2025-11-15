@@ -5,6 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from app.api.main import api_router
 from app.core.config import settings
+from app.services.node_monitor import start_node_monitor
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:
@@ -31,3 +32,9 @@ if settings.all_cors_origins:
     )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+
+@app.on_event("startup")
+def _startup() -> None:
+    # 启动后台节点离线检测线程
+    start_node_monitor()

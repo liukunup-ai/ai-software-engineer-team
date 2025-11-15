@@ -35,16 +35,15 @@ class NodesPublic(SQLModel):
 class NodeRegister(SQLModel):
     """从节点注册请求"""
     name: str = Field(max_length=255)
-    ip: str = Field(max_length=64)
-    registration_key: str = Field(max_length=255)
-    description: str | None = Field(default=None, max_length=255)
+    host: str = Field(max_length=64)
+    register_key: str = Field(max_length=255)
+    desc: str | None = Field(default=None, max_length=255)
     tags: str | None = Field(default=None, max_length=255)
 
 class NodeHeartbeat(SQLModel):
     """从节点心跳请求"""
     node_id: uuid.UUID
-    registration_key: str = Field(max_length=255)
-    status: str | None = Field(default="online", max_length=32)
+    register_key: str = Field(max_length=255)
 
 class RegistrationKeyPublic(SQLModel):
     """注册密钥响应"""
