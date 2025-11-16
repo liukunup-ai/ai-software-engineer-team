@@ -20,6 +20,7 @@ docker compose watch
 # 前端命令
 docker compose stop frontend
 cd frontend
+npm install
 npm run dev
 npm run test
 
@@ -27,7 +28,10 @@ npm run test
 docker compose stop backend
 cd backend
 uv sync
-.venv/bin/fastapi dev app/main.py
+. .venv/bin/activate
+alembic upgrade head
+fastapi dev app/main.py
+fastapi run
 pytest
 ```
 

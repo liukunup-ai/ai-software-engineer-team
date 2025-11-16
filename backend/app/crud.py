@@ -5,6 +5,7 @@ from sqlmodel import Session, select
 
 from app.core.security import get_password_hash, verify_password
 from app.models import Item, ItemCreate, User, UserCreate, UserUpdate, Node, NodeCreate, NodeUpdate
+from app.models.issue import Issue, IssueCreate, IssueUpdate
 
 
 def create_user(*, session: Session, user_create: UserCreate) -> User:
@@ -76,4 +77,29 @@ def delete_node(*, session: Session, node_id: uuid.UUID) -> None:
     db_node = session.get(Node, node_id)
     if db_node:
         session.delete(db_node)
+        session.commit()
+
+# Issue CRUD helpers
+def create_issue(*, session: Session, issue_in: IssueCreate, owner_id: uuid.UUID) -> Issue:
+    db_issue = Issue.model_validate(issue_in, update={"owner_id": owner_id})
+    session.add(db_issue)
+    session.commit()
+    session.refresh(db_issue)
+    return db_issue
+
+def get_issue(*, session: Session, issue_id: uuid.UUID) -> Issue | None:
+    return session.get(Issue, issue_id)
+
+def update_issue(*, session: Session, db_issue: Issue, issue_in: IssueUpdate) -> Issue:
+    issue_data = issue_in.model_dump(exclude_unset=True)
+    db_issue.sqlmodel_update(issue_data)
+    session.add(db_issue)
+    session.commit()
+    session.refresh(db_issue)
+    return db_issue
+
+def delete_issue(*, session: Session, issue_id: uuid.UUID) -> None:
+    db_issue = session.get(Issue, issue_id)
+    if db_issue:
+        session.delete(db_issue)
         session.commit()

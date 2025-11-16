@@ -1,7 +1,7 @@
 import uuid
 from typing import Any
 from datetime import datetime
-
+import httpx
 from fastapi import APIRouter, HTTPException
 from sqlmodel import select, func
 
@@ -9,6 +9,7 @@ from app.api.deps import CurrentUser, SessionDep
 from app.models import Node, NodeCreate, NodePublic, NodesPublic, NodeUpdate, Message
 from app.models.node import NodeRegister, NodeHeartbeat, RegistrationKeyPublic
 from app.models.registration_key import NodeRegistrationKey
+from app.models.command import CommandRequest, CommandResult
 from app.core.config import settings
 
 router = APIRouter(prefix="/nodes", tags=["nodes"])
@@ -196,5 +197,38 @@ def delete_node(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -
     session.delete(node)
     session.commit()
     return Message(message="Node deleted successfully")
+
+
+@router.post("/{id}/execute", response_model=CommandResult)
+async def execute_command_on_node(
+    session: SessionDep, 
+    current_user: CurrentUser, 
+    id: uuid.UUID, 
+    command_req: CommandRequest
+) -> Any:
+    """在指定节点上执行命令"""
+    if not current_user.is_superuser:
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+    
+    node = session.get(Node, id)
+    if not node:
+        raise HTTPException(status_code=404, detail="Node not found")
+    
+    if node.status != "online":
+        raise HTTPException(status_code=400, detail="Node is not online")
+    
+    # 构造从节点的执行URL
+    node_url = f"http://{node.ip}:8007/execute"
+    
+    try:
+        async with httpx.AsyncClient(timeout=300.0) as client:
+            response = await client.post(
+                node_url,
+                json=command_req.model_dump()
+            )
+            response.raise_for_status()
+            return CommandResult(**response.json())
+    except httpx.HTTPError as e:
+        raise HTTPException(status_code=500, detail=f"Failed to execute command on node: {str(e)}")
 
 

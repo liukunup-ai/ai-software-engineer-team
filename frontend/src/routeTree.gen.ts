@@ -18,6 +18,8 @@ import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutNodesRouteImport } from './routes/_layout/nodes'
 import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
+import { Route as LayoutIssuesRouteImport } from './routes/_layout/issues'
+import { Route as LayoutCredentialsRouteImport } from './routes/_layout/credentials'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
 
 const SignupRoute = SignupRouteImport.update({
@@ -64,6 +66,16 @@ const LayoutItemsRoute = LayoutItemsRouteImport.update({
   path: '/items',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutIssuesRoute = LayoutIssuesRouteImport.update({
+  id: '/issues',
+  path: '/issues',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutCredentialsRoute = LayoutCredentialsRouteImport.update({
+  id: '/credentials',
+  path: '/credentials',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutAdminRoute = LayoutAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -76,6 +88,8 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
+  '/credentials': typeof LayoutCredentialsRoute
+  '/issues': typeof LayoutIssuesRoute
   '/items': typeof LayoutItemsRoute
   '/nodes': typeof LayoutNodesRoute
   '/settings': typeof LayoutSettingsRoute
@@ -87,6 +101,8 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
+  '/credentials': typeof LayoutCredentialsRoute
+  '/issues': typeof LayoutIssuesRoute
   '/items': typeof LayoutItemsRoute
   '/nodes': typeof LayoutNodesRoute
   '/settings': typeof LayoutSettingsRoute
@@ -100,6 +116,8 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
+  '/_layout/credentials': typeof LayoutCredentialsRoute
+  '/_layout/issues': typeof LayoutIssuesRoute
   '/_layout/items': typeof LayoutItemsRoute
   '/_layout/nodes': typeof LayoutNodesRoute
   '/_layout/settings': typeof LayoutSettingsRoute
@@ -113,6 +131,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
+    | '/credentials'
+    | '/issues'
     | '/items'
     | '/nodes'
     | '/settings'
@@ -124,6 +144,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
+    | '/credentials'
+    | '/issues'
     | '/items'
     | '/nodes'
     | '/settings'
@@ -136,6 +158,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
+    | '/_layout/credentials'
+    | '/_layout/issues'
     | '/_layout/items'
     | '/_layout/nodes'
     | '/_layout/settings'
@@ -215,6 +239,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutItemsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/issues': {
+      id: '/_layout/issues'
+      path: '/issues'
+      fullPath: '/issues'
+      preLoaderRoute: typeof LayoutIssuesRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/credentials': {
+      id: '/_layout/credentials'
+      path: '/credentials'
+      fullPath: '/credentials'
+      preLoaderRoute: typeof LayoutCredentialsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/admin': {
       id: '/_layout/admin'
       path: '/admin'
@@ -227,6 +265,8 @@ declare module '@tanstack/react-router' {
 
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
+  LayoutCredentialsRoute: typeof LayoutCredentialsRoute
+  LayoutIssuesRoute: typeof LayoutIssuesRoute
   LayoutItemsRoute: typeof LayoutItemsRoute
   LayoutNodesRoute: typeof LayoutNodesRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
@@ -235,6 +275,8 @@ interface LayoutRouteChildren {
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
+  LayoutCredentialsRoute: LayoutCredentialsRoute,
+  LayoutIssuesRoute: LayoutIssuesRoute,
   LayoutItemsRoute: LayoutItemsRoute,
   LayoutNodesRoute: LayoutNodesRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,

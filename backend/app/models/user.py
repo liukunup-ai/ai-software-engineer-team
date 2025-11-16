@@ -32,6 +32,10 @@ class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
+    issues: list["Issue"] = Relationship(back_populates="owner", cascade_delete=True)
+    credentials: list["Credential"] = Relationship(back_populates="owner", cascade_delete=True)
+    repositories: list["Repository"] = Relationship(back_populates="owner", cascade_delete=True)
+    prompts: list["Prompt"] = Relationship(back_populates="owner", cascade_delete=True)
 
 class UserPublic(UserBase):
     id: uuid.UUID

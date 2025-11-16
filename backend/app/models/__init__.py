@@ -7,6 +7,10 @@ from app.models.item import *
 from app.models.common import *
 from app.models.node import *
 from app.models.registration_key import *
+from app.models.issue import *
+from app.models.credential import *
+from app.models.repository import *
+from app.models.prompt import *
 
 __all__ = ["SQLModel"]
 
