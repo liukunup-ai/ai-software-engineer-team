@@ -44,12 +44,15 @@ def get_registration_key(current_user: CurrentUser) -> Any:
     # 构造 Docker 命令示例 (变量名与最新注册模型保持一致: HOST / REGISTER_KEY)
     backend_url = settings.FRONTEND_HOST.replace("5173", "8000")  # 简单替换端口，假设后端为 8000
     docker_command = f"""docker run -d \\
-  --name ai-node \\
-  -e NODE_NAME="my-node" \\
-  -e NODE_HOST="$(hostname -I | awk '{{print $1}}')" \\
-  -e REGISTER_KEY="{settings.NODE_REGISTRATION_KEY}" \\
   -e REGISTER_URL="{backend_url}" \\
-  your-registry/ai-node:latest"""
+  -e REGISTER_KEY="{settings.NODE_REGISTRATION_KEY}" \\
+  -e NODE_NAME="aise-worker-node" \\
+  -e NODE_HOST="$(hostname -I | awk '{{print $1}}')" \\
+  -e NODE_PORT="8007" \\
+  -e TZ=Asia/Shanghai \\
+  --restart=unless-stopped \\
+  --name=aise-worker-node \\
+  liukunup/ai-software-engineer:latest"""
 
     return RegistrationKeyPublic(
         registration_key=settings.NODE_REGISTRATION_KEY,
