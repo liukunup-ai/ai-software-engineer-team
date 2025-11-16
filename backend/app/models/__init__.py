@@ -6,5 +6,7 @@ from app.models.user import *
 from app.models.item import *
 from app.models.common import *
 from app.models.node import *
+from app.models.registration_key import *
 
 __all__ = ["SQLModel"]
+
