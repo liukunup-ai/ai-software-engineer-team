@@ -6,8 +6,7 @@ import { z } from "zod"
 
 import { NodesService } from "@/client" // 需要在后端 OpenAPI 中生成对应 client
 import AddNode from "@/components/Nodes/AddNode"
-import EditNode from "@/components/Nodes/EditNode"
-import DeleteNode from "@/components/Nodes/DeleteNode"
+import { NodeActionsMenu } from "@/components/Common/NodeActionsMenu"
 import RegistrationKeyDisplay from "@/components/Nodes/RegistrationKeyDisplay"
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@/components/ui/pagination.tsx"
 
@@ -71,7 +70,7 @@ function NodesTable() {
                 {node.last_heartbeat ? new Date(node.last_heartbeat).toLocaleString('zh-CN') : "从未连接"}
               </Table.Cell>
               <Table.Cell truncate maxW="xs" color={!node.tags ? "gray" : "inherit"}>{node.tags || "N/A"}</Table.Cell>
-              <Table.Cell><EditNode node={node} /> <DeleteNode id={node.id} /></Table.Cell>
+              <Table.Cell><NodeActionsMenu node={node} /></Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
