@@ -5,7 +5,7 @@ import {
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { PromptsService } from "@/client"
+import { ProjectsService } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
@@ -19,33 +19,33 @@ import {
   DialogTitle,
 } from "../ui/dialog"
 
-interface DeletePromptProps {
+interface DeleteProjectProps {
   id: string
   name: string
   isOpen: boolean
   onClose: () => void
 }
 
-const DeletePrompt = ({
+const DeleteProject = ({
   id,
   name,
   isOpen,
   onClose,
-}: DeletePromptProps) => {
+}: DeleteProjectProps) => {
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
 
   const mutation = useMutation({
-    mutationFn: () => PromptsService.deletePrompt({ id }),
+    mutationFn: () => ProjectsService.deleteProject({ id }),
     onSuccess: () => {
-      showSuccessToast("Prompt deleted successfully.")
+      showSuccessToast("Project deleted successfully.")
       onClose()
     },
     onError: (err: ApiError) => {
       handleError(err)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["prompts"] })
+      queryClient.invalidateQueries({ queryKey: ["projects"] })
     },
   })
 
@@ -66,11 +66,11 @@ const DeletePrompt = ({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Prompt</DialogTitle>
+          <DialogTitle>Delete Project</DialogTitle>
         </DialogHeader>
         <DialogBody>
           <Text>
-            Are you sure you want to delete the prompt "{name}"? This action
+            Are you sure you want to delete the project "{name}"? This action
             cannot be undone.
           </Text>
         </DialogBody>
@@ -101,4 +101,4 @@ const DeletePrompt = ({
   )
 }
 
-export default DeletePrompt
+export default DeleteProject

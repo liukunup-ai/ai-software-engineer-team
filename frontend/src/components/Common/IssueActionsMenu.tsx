@@ -8,15 +8,15 @@ import {
 import { useState } from "react"
 import { FiEdit, FiMoreHorizontal, FiTrash } from "react-icons/fi"
 
-import type { CredentialPublic } from "@/client"
-import DeleteCredential from "@/components/Credentials/DeleteCredential"
-import EditCredential from "@/components/Credentials/EditCredential"
+import type { IssuePublic } from "@/client"
+import DeleteIssue from "@/components/Issues/DeleteIssue"
+import EditIssue from "@/components/Issues/EditIssue"
 
-interface CredentialActionsMenuProps {
-  credential: CredentialPublic
+interface IssueActionsMenuProps {
+  issue: IssuePublic
 }
 
-export const CredentialActionsMenu = ({ credential }: CredentialActionsMenuProps) => {
+export const IssueActionsMenu = ({ issue }: IssueActionsMenuProps) => {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
@@ -39,17 +39,18 @@ export const CredentialActionsMenu = ({ credential }: CredentialActionsMenuProps
           </MenuItem>
         </MenuContent>
       </MenuRoot>
-      <EditCredential
-        credential={credential}
+      <EditIssue
+        issue={issue}
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
       />
-      <DeleteCredential
-        id={credential.id}
-        title={credential.title}
+      <DeleteIssue
+        id={issue.id}
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
       />
     </>
   )
 }
+
+export default IssueActionsMenu

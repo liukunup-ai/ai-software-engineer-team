@@ -16,6 +16,9 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
+import { Route as LayoutRepositoriesRouteImport } from './routes/_layout/repositories'
+import { Route as LayoutPromptsRouteImport } from './routes/_layout/prompts'
+import { Route as LayoutProjectsRouteImport } from './routes/_layout/projects'
 import { Route as LayoutNodesRouteImport } from './routes/_layout/nodes'
 import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
 import { Route as LayoutIssuesRouteImport } from './routes/_layout/issues'
@@ -56,6 +59,21 @@ const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutRepositoriesRoute = LayoutRepositoriesRouteImport.update({
+  id: '/repositories',
+  path: '/repositories',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutPromptsRoute = LayoutPromptsRouteImport.update({
+  id: '/prompts',
+  path: '/prompts',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutProjectsRoute = LayoutProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutNodesRoute = LayoutNodesRouteImport.update({
   id: '/nodes',
   path: '/nodes',
@@ -92,6 +110,9 @@ export interface FileRoutesByFullPath {
   '/issues': typeof LayoutIssuesRoute
   '/items': typeof LayoutItemsRoute
   '/nodes': typeof LayoutNodesRoute
+  '/projects': typeof LayoutProjectsRoute
+  '/prompts': typeof LayoutPromptsRoute
+  '/repositories': typeof LayoutRepositoriesRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
 }
@@ -105,6 +126,9 @@ export interface FileRoutesByTo {
   '/issues': typeof LayoutIssuesRoute
   '/items': typeof LayoutItemsRoute
   '/nodes': typeof LayoutNodesRoute
+  '/projects': typeof LayoutProjectsRoute
+  '/prompts': typeof LayoutPromptsRoute
+  '/repositories': typeof LayoutRepositoriesRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
 }
@@ -120,6 +144,9 @@ export interface FileRoutesById {
   '/_layout/issues': typeof LayoutIssuesRoute
   '/_layout/items': typeof LayoutItemsRoute
   '/_layout/nodes': typeof LayoutNodesRoute
+  '/_layout/projects': typeof LayoutProjectsRoute
+  '/_layout/prompts': typeof LayoutPromptsRoute
+  '/_layout/repositories': typeof LayoutRepositoriesRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/': typeof LayoutIndexRoute
 }
@@ -135,6 +162,9 @@ export interface FileRouteTypes {
     | '/issues'
     | '/items'
     | '/nodes'
+    | '/projects'
+    | '/prompts'
+    | '/repositories'
     | '/settings'
     | '/'
   fileRoutesByTo: FileRoutesByTo
@@ -148,6 +178,9 @@ export interface FileRouteTypes {
     | '/issues'
     | '/items'
     | '/nodes'
+    | '/projects'
+    | '/prompts'
+    | '/repositories'
     | '/settings'
     | '/'
   id:
@@ -162,6 +195,9 @@ export interface FileRouteTypes {
     | '/_layout/issues'
     | '/_layout/items'
     | '/_layout/nodes'
+    | '/_layout/projects'
+    | '/_layout/prompts'
+    | '/_layout/repositories'
     | '/_layout/settings'
     | '/_layout/'
   fileRoutesById: FileRoutesById
@@ -225,6 +261,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/repositories': {
+      id: '/_layout/repositories'
+      path: '/repositories'
+      fullPath: '/repositories'
+      preLoaderRoute: typeof LayoutRepositoriesRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/prompts': {
+      id: '/_layout/prompts'
+      path: '/prompts'
+      fullPath: '/prompts'
+      preLoaderRoute: typeof LayoutPromptsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/projects': {
+      id: '/_layout/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof LayoutProjectsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/nodes': {
       id: '/_layout/nodes'
       path: '/nodes'
@@ -269,6 +326,9 @@ interface LayoutRouteChildren {
   LayoutIssuesRoute: typeof LayoutIssuesRoute
   LayoutItemsRoute: typeof LayoutItemsRoute
   LayoutNodesRoute: typeof LayoutNodesRoute
+  LayoutProjectsRoute: typeof LayoutProjectsRoute
+  LayoutPromptsRoute: typeof LayoutPromptsRoute
+  LayoutRepositoriesRoute: typeof LayoutRepositoriesRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
@@ -279,6 +339,9 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutIssuesRoute: LayoutIssuesRoute,
   LayoutItemsRoute: LayoutItemsRoute,
   LayoutNodesRoute: LayoutNodesRoute,
+  LayoutProjectsRoute: LayoutProjectsRoute,
+  LayoutPromptsRoute: LayoutPromptsRoute,
+  LayoutRepositoriesRoute: LayoutRepositoriesRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
 }

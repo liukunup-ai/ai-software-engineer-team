@@ -3,15 +3,16 @@ import {
   DialogActionTrigger,
   Input,
   Text,
+  Textarea,
   VStack,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Controller, type SubmitHandler, useForm } from "react-hook-form"
 
 import {
-  type RepositoryUpdate,
-  type RepositoryPublic,
-  RepositoriesService,
+  type ProjectUpdate,
+  type ProjectPublic,
+  ProjectsService,
 } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
@@ -28,13 +29,13 @@ import {
 import { Checkbox } from "../ui/checkbox"
 import { Field } from "../ui/field"
 
-interface EditRepositoryProps {
-  repository: RepositoryPublic
+interface EditProjectProps {
+  project: ProjectPublic
   isOpen: boolean
   onClose: () => void
 }
 
-const EditRepository = ({ repository, isOpen, onClose }: EditRepositoryProps) => {
+const EditProject = ({ project, isOpen, onClose }: EditProjectProps) => {
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
   const {
@@ -43,36 +44,35 @@ const EditRepository = ({ repository, isOpen, onClose }: EditRepositoryProps) =>
     handleSubmit,
     reset,
     formState: { errors, isDirty, isValid, isSubmitting },
-  } = useForm<RepositoryUpdate>({
+  } = useForm<ProjectUpdate>({
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      name: repository.name,
-      url: repository.url,
-      description: repository.description || "",
-      is_public: repository.is_public,
+      name: project.name,
+      description: project.description || "",
+      is_active: project.is_active,
     },
   })
 
   const mutation = useMutation({
-    mutationFn: (data: RepositoryUpdate) =>
-      RepositoriesService.updateRepository({
-        id: repository.id,
+    mutationFn: (data: ProjectUpdate) =>
+      ProjectsService.updateProject({
+        id: project.id,
         requestBody: data,
       }),
     onSuccess: () => {
-      showSuccessToast("Repository updated successfully.")
+      showSuccessToast("Project updated successfully.")
       onClose()
     },
     onError: (err: ApiError) => {
       handleError(err)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["repositories"] })
+      queryClient.invalidateQueries({ queryKey: ["projects"] })
     },
   })
 
-  const onSubmit: SubmitHandler<RepositoryUpdate> = (data) => {
+  const onSubmit: SubmitHandler<ProjectUpdate> = (data) => {
     mutation.mutate(data)
   }
 
@@ -95,10 +95,10 @@ const EditRepository = ({ repository, isOpen, onClose }: EditRepositoryProps) =>
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Edit Repository</DialogTitle>
+            <DialogTitle>Edit Project</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <Text mb={4}>Edit the repository details.</Text>
+            <Text mb={4}>Edit the project details.</Text>
             <VStack gap={4}>
               <Field
                 required
@@ -110,22 +110,7 @@ const EditRepository = ({ repository, isOpen, onClose }: EditRepositoryProps) =>
                   {...register("name", {
                     required: "Name is required.",
                   })}
-                  placeholder="Repository Name"
-                  type="text"
-                />
-              </Field>
-
-              <Field
-                required
-                invalid={!!errors.url}
-                errorText={errors.url?.message}
-                label="URL"
-              >
-                <Input
-                  {...register("url", {
-                    required: "URL is required.",
-                  })}
-                  placeholder="https://github.com/user/repo"
+                  placeholder="Project Name"
                   type="text"
                 />
               </Field>
@@ -135,27 +120,26 @@ const EditRepository = ({ repository, isOpen, onClose }: EditRepositoryProps) =>
                 errorText={errors.description?.message}
                 label="Description"
               >
-                <Input
+                <Textarea
                   {...register("description")}
                   placeholder="Description"
-                  type="text"
                 />
               </Field>
 
               <Field
-                invalid={!!errors.is_public}
-                errorText={errors.is_public?.message}
-                label="Public Repository"
+                invalid={!!errors.is_active}
+                errorText={errors.is_active?.message}
+                label="Active"
               >
                 <Controller
                   control={control}
-                  name="is_public"
+                  name="is_active"
                   render={({ field }) => (
                     <Checkbox
                       checked={field.value ?? false}
                       onCheckedChange={({ checked }) => field.onChange(checked)}
                     >
-                      Is public?
+                      Is active?
                     </Checkbox>
                   )}
                 />
@@ -190,4 +174,4 @@ const EditRepository = ({ repository, isOpen, onClose }: EditRepositoryProps) =>
   )
 }
 
-export default EditRepository
+export default EditProject

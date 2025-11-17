@@ -1,28 +1,30 @@
 import {
   Button,
-  FormControl,
-  FormLabel,
+  DialogActionTrigger,
+  DialogTitle,
   Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
+  Text,
   Textarea,
+  VStack,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import { FaPlus } from "react-icons/fa"
 
-import { type ApiError, IssuesService } from "../../client"
-import useCustomToast from "../../hooks/useCustomToast"
-import { handleError } from "../../utils"
-
-interface AddIssueProps {
-  isOpen: boolean
-  onClose: () => void
-}
+import { type ApiError, IssuesService } from "@/client"
+import useCustomToast from "@/hooks/useCustomToast"
+import { handleError } from "@/utils"
+import {
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTrigger,
+} from "../ui/dialog"
+import { Field } from "../ui/field"
 
 interface IssueCreateForm {
   title: string
@@ -32,14 +34,15 @@ interface IssueCreateForm {
   priority?: number
 }
 
-const AddIssue = ({ isOpen, onClose }: AddIssueProps) => {
+const AddIssue = () => {
+  const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
-  const showToast = useCustomToast()
+  const { showSuccessToast } = useCustomToast()
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<IssueCreateForm>({
     mode: "onBlur",
     criteriaMode: "all",
@@ -55,12 +58,12 @@ const AddIssue = ({ isOpen, onClose }: AddIssueProps) => {
     mutationFn: (data: IssueCreateForm) =>
       IssuesService.createIssue({ requestBody: data }),
     onSuccess: () => {
-      showToast("Success!", "Issue created successfully.", "success")
+      showSuccessToast("Issue created successfully.")
       reset()
-      onClose()
+      setIsOpen(false)
     },
     onError: (err: ApiError) => {
-      handleError(err, showToast)
+      handleError(err)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] })
@@ -72,80 +75,113 @@ const AddIssue = ({ isOpen, onClose }: AddIssueProps) => {
   }
 
   return (
-    <>
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        size={{ base: "sm", md: "md" }}
-        isCentered
-      >
-        <ModalOverlay />
-        <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
-          <ModalHeader>Add Issue</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <FormControl isRequired isInvalid={!!errors.title}>
-              <FormLabel htmlFor="title">Title</FormLabel>
-              <Input
-                id="title"
-                {...register("title", {
-                  required: "Title is required.",
-                })}
-                placeholder="Issue title"
-                type="text"
-              />
-            </FormControl>
-            <FormControl mt={4}>
-              <FormLabel htmlFor="description">Description</FormLabel>
-              <Textarea
-                id="description"
-                {...register("description")}
-                placeholder="Issue description"
-              />
-            </FormControl>
-            <FormControl mt={4}>
-              <FormLabel htmlFor="repository_url">Repository URL</FormLabel>
-              <Input
-                id="repository_url"
-                {...register("repository_url")}
-                placeholder="https://github.com/user/repo"
-                type="text"
-              />
-            </FormControl>
-            <FormControl mt={4}>
-              <FormLabel htmlFor="issue_number">Issue Number</FormLabel>
-              <Input
-                id="issue_number"
-                {...register("issue_number", {
-                  valueAsNumber: true,
-                })}
-                placeholder="123"
-                type="number"
-              />
-            </FormControl>
-            <FormControl mt={4}>
-              <FormLabel htmlFor="priority">Priority</FormLabel>
-              <Input
-                id="priority"
-                {...register("priority", {
-                  valueAsNumber: true,
-                })}
-                placeholder="0"
-                type="number"
-                defaultValue={0}
-              />
-            </FormControl>
-          </ModalBody>
+    <DialogRoot
+      size={{ base: "xs", md: "md" }}
+      placement="center"
+      open={isOpen}
+      onOpenChange={({ open }) => setIsOpen(open)}
+    >
+      <DialogTrigger asChild>
+        <Button value="add-issue" my={4}>
+          <FaPlus fontSize="16px" />
+          Add Issue
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogHeader>
+            <DialogTitle>Add Issue</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <Text mb={4}>Fill in the details to add a new issue.</Text>
+            <VStack gap={4}>
+              <Field
+                required
+                invalid={!!errors.title}
+                errorText={errors.title?.message}
+                label="Title"
+              >
+                <Input
+                  {...register("title", {
+                    required: "Title is required.",
+                  })}
+                  placeholder="Issue title"
+                  type="text"
+                />
+              </Field>
+              <Field
+                invalid={!!errors.description}
+                errorText={errors.description?.message}
+                label="Description"
+              >
+                <Textarea
+                  {...register("description")}
+                  placeholder="Issue description"
+                />
+              </Field>
+              <Field
+                invalid={!!errors.repository_url}
+                errorText={errors.repository_url?.message}
+                label="Repository URL"
+              >
+                <Input
+                  {...register("repository_url")}
+                  placeholder="https://github.com/user/repo"
+                  type="text"
+                />
+              </Field>
+              <Field
+                invalid={!!errors.issue_number}
+                errorText={errors.issue_number?.message}
+                label="Issue Number"
+              >
+                <Input
+                  {...register("issue_number", {
+                    valueAsNumber: true,
+                  })}
+                  placeholder="123"
+                  type="number"
+                />
+              </Field>
+              <Field
+                invalid={!!errors.priority}
+                errorText={errors.priority?.message}
+                label="Priority"
+              >
+                <Input
+                  {...register("priority", {
+                    valueAsNumber: true,
+                  })}
+                  placeholder="0"
+                  type="number"
+                />
+              </Field>
+            </VStack>
+          </DialogBody>
 
-          <ModalFooter gap={3}>
-            <Button variant="primary" type="submit" isLoading={isSubmitting}>
+          <DialogFooter gap={2}>
+            <DialogActionTrigger asChild>
+              <Button
+                variant="subtle"
+                colorPalette="gray"
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+            </DialogActionTrigger>
+            <Button
+              variant="solid"
+              type="submit"
+              disabled={!isValid}
+              loading={isSubmitting}
+            >
               Save
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+          </DialogFooter>
+        </form>
+        <DialogCloseTrigger />
+      </DialogContent>
+    </DialogRoot>
   )
 }
 

@@ -1,89 +1,76 @@
-// 手动补充 NodesService，前端调用后端 /nodes 相关接口
-import type { CancelablePromise } from './core/CancelablePromise';
-import { OpenAPI } from './core/OpenAPI';
-import { request as __request } from './core/request';
+import { NodesService as SDKNodesService } from './sdk.gen';
+import type { NodePublic, NodeCreate, NodeUpdate, NodeRegister, NodeHeartbeat, CommandRequest } from './types.gen';
 
-export interface NodeCreate {
-  name: string;
-  ip: string;
-  description?: string;
-  tags?: string;
-  status?: string;
-}
-
-export interface NodeUpdate {
-  name?: string;
-  ip?: string;
-  description?: string;
-  tags?: string;
-  status?: string;
-}
-
-export interface NodePublic {
-  id: string;
-  name: string;
-  ip: string;
-  description?: string;
-  tags?: string;
-  status?: string;
-  last_heartbeat?: string;
-}
-
-export interface NodesPublic {
-  data: NodePublic[];
-  count: number;
-}
-
-export interface RegistrationKeyPublic {
-  registration_key: string;
-  docker_command: string;
-}
+export type { NodePublic };
 
 export class NodesService {
-  static readNodes(params: { skip?: number; limit?: number } = {}): CancelablePromise<NodesPublic> {
-    return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/v1/nodes/',
-      query: params,
-    });
+  /**
+   * Read all nodes
+   */
+  static readNodes(skip?: number, limit?: number) {
+    return SDKNodesService.readNodes({ skip, limit });
   }
 
-  static createNode(data: NodeCreate): CancelablePromise<NodePublic> {
-    return __request(OpenAPI, {
-      method: 'POST',
-      url: '/api/v1/nodes/',
-      body: data,
-      mediaType: 'application/json',
-    });
+  /**
+   * Create a new node
+   */
+  static createNode(requestBody: NodeCreate) {
+    return SDKNodesService.createNode({ requestBody });
   }
 
-  static readNode(id: string): CancelablePromise<NodePublic> {
-    return __request(OpenAPI, {
-      method: 'GET',
-      url: `/api/v1/nodes/${id}`,
-    });
+  /**
+   * Get registration key for node
+   */
+  static getRegistrationKey() {
+    return SDKNodesService.getRegistrationKey();
   }
 
-  static updateNode(id: string, data: NodeUpdate): CancelablePromise<NodePublic> {
-    return __request(OpenAPI, {
-      method: 'PUT',
-      url: `/api/v1/nodes/${id}`,
-      body: data,
-      mediaType: 'application/json',
-    });
+  /**
+   * Rotate registration key
+   */
+  static rotateRegistrationKey() {
+    return SDKNodesService.rotateRegistrationKey();
   }
 
-  static deleteNode(id: string): CancelablePromise<void> {
-    return __request(OpenAPI, {
-      method: 'DELETE',
-      url: `/api/v1/nodes/${id}`,
-    });
+  /**
+   * Register a new node
+   */
+  static registerNode(requestBody: NodeRegister) {
+    return SDKNodesService.registerNode({ requestBody });
   }
 
-  static getRegistrationKey(): CancelablePromise<RegistrationKeyPublic> {
-    return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/v1/nodes/registration-key',
-    });
+  /**
+   * Send node heartbeat
+   */
+  static nodeHeartbeat(requestBody: NodeHeartbeat) {
+    return SDKNodesService.nodeHeartbeat({ requestBody });
+  }
+
+  /**
+   * Read a node by ID
+   */
+  static readNode(id: string) {
+    return SDKNodesService.readNode({ id });
+  }
+
+  /**
+   * Update a node
+   */
+  static updateNode(id: string, requestBody: NodeUpdate) {
+    return SDKNodesService.updateNode({ id, requestBody });
+  }
+
+  /**
+   * Delete a node
+   */
+  static deleteNode(id: string) {
+    return SDKNodesService.deleteNode({ id });
+  }
+
+  /**
+   * Execute a command on a node
+   */
+  static executeCommandOnNode(id: string, requestBody: CommandRequest) {
+    return SDKNodesService.executeCommandOnNode({ id, requestBody });
   }
 }

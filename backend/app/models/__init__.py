@@ -11,6 +11,7 @@ from app.models.issue import *
 from app.models.credential import *
 from app.models.repository import *
 from app.models.prompt import *
+from app.models.project import *
 
 __all__ = ["SQLModel"]
 

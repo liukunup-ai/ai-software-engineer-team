@@ -36,6 +36,7 @@ class User(UserBase, table=True):
     credentials: list["Credential"] = Relationship(back_populates="owner", cascade_delete=True)
     repositories: list["Repository"] = Relationship(back_populates="owner", cascade_delete=True)
     prompts: list["Prompt"] = Relationship(back_populates="owner", cascade_delete=True)
+    projects: list["Project"] = Relationship(back_populates="owner", cascade_delete=True)
 
 class UserPublic(UserBase):
     id: uuid.UUID

@@ -55,6 +55,301 @@ export const Body_login_login_access_tokenSchema = {
     title: 'Body_login-login_access_token'
 } as const;
 
+export const CommandRequestSchema = {
+    properties: {
+        command: {
+            type: 'string',
+            title: 'Command'
+        },
+        args: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Args',
+            default: []
+        }
+    },
+    type: 'object',
+    required: ['command'],
+    title: 'CommandRequest',
+    description: '命令执行请求'
+} as const;
+
+export const CommandResultSchema = {
+    properties: {
+        command: {
+            type: 'string',
+            title: 'Command'
+        },
+        args: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Args'
+        },
+        exit_code: {
+            type: 'integer',
+            title: 'Exit Code'
+        },
+        stdout: {
+            type: 'string',
+            title: 'Stdout'
+        },
+        stderr: {
+            type: 'string',
+            title: 'Stderr'
+        },
+        duration_ms: {
+            type: 'integer',
+            title: 'Duration Ms'
+        }
+    },
+    type: 'object',
+    required: ['command', 'args', 'exit_code', 'stdout', 'stderr', 'duration_ms'],
+    title: 'CommandResult',
+    description: '命令执行结果'
+} as const;
+
+export const CredentialCreateSchema = {
+    properties: {
+        title: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Title'
+        },
+        username: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Username'
+        },
+        password: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Password'
+        },
+        service: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Service'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        }
+    },
+    type: 'object',
+    required: ['title', 'username', 'password', 'service'],
+    title: 'CredentialCreate'
+} as const;
+
+export const CredentialPublicSchema = {
+    properties: {
+        title: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Title'
+        },
+        username: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Username'
+        },
+        password: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Password'
+        },
+        service: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Service'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        owner_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Owner Id'
+        }
+    },
+    type: 'object',
+    required: ['title', 'username', 'password', 'service', 'id', 'owner_id'],
+    title: 'CredentialPublic'
+} as const;
+
+export const CredentialUpdateSchema = {
+    properties: {
+        title: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Title'
+        },
+        username: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Username'
+        },
+        password: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Password'
+        },
+        service: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Service'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        }
+    },
+    type: 'object',
+    title: 'CredentialUpdate'
+} as const;
+
+export const CredentialsPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/CredentialPublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'CredentialsPublic'
+} as const;
+
+export const GitHubMultiSyncRequestSchema = {
+    properties: {
+        repos: {
+            items: {
+                additionalProperties: true,
+                type: 'object'
+            },
+            type: 'array',
+            title: 'Repos'
+        },
+        github_token: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Github Token'
+        }
+    },
+    type: 'object',
+    required: ['repos'],
+    title: 'GitHubMultiSyncRequest',
+    description: 'GitHub多仓库同步请求模型'
+} as const;
+
+export const GitHubSyncRequestSchema = {
+    properties: {
+        repo_owner: {
+            type: 'string',
+            title: 'Repo Owner'
+        },
+        repo_name: {
+            type: 'string',
+            title: 'Repo Name'
+        },
+        labels: {
+            anyOf: [
+                {
+                    items: {
+                        type: 'string'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Labels'
+        }
+    },
+    type: 'object',
+    required: ['repo_owner', 'repo_name'],
+    title: 'GitHubSyncRequest',
+    description: 'GitHub同步请求模型'
+} as const;
+
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {
@@ -67,6 +362,325 @@ export const HTTPValidationErrorSchema = {
     },
     type: 'object',
     title: 'HTTPValidationError'
+} as const;
+
+export const IssueCreateSchema = {
+    properties: {
+        title: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Title'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2048
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        repository_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 512
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Repository Url'
+        },
+        issue_number: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Issue Number'
+        },
+        status: {
+            type: 'string',
+            maxLength: 32,
+            title: 'Status',
+            default: 'pending'
+        },
+        priority: {
+            type: 'integer',
+            title: 'Priority',
+            default: 0
+        },
+        assigned_node_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Assigned Node Id'
+        }
+    },
+    type: 'object',
+    required: ['title'],
+    title: 'IssueCreate'
+} as const;
+
+export const IssuePublicSchema = {
+    properties: {
+        title: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Title'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2048
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        repository_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 512
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Repository Url'
+        },
+        issue_number: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Issue Number'
+        },
+        status: {
+            type: 'string',
+            maxLength: 32,
+            title: 'Status',
+            default: 'pending'
+        },
+        priority: {
+            type: 'integer',
+            title: 'Priority',
+            default: 0
+        },
+        assigned_node_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Assigned Node Id'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        owner_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Owner Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        },
+        started_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Started At'
+        },
+        completed_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Completed At'
+        },
+        error_message: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Error Message'
+        },
+        result_branch: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Result Branch'
+        }
+    },
+    type: 'object',
+    required: ['title', 'id', 'owner_id', 'created_at', 'updated_at'],
+    title: 'IssuePublic'
+} as const;
+
+export const IssueUpdateSchema = {
+    properties: {
+        title: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Title'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2048
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        repository_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 512
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Repository Url'
+        },
+        issue_number: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Issue Number'
+        },
+        status: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 32
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Status'
+        },
+        priority: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Priority'
+        },
+        assigned_node_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Assigned Node Id'
+        }
+    },
+    type: 'object',
+    title: 'IssueUpdate'
+} as const;
+
+export const IssuesPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/IssuePublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'IssuesPublic'
 } as const;
 
 export const ItemCreateSchema = {
@@ -202,14 +816,292 @@ export const NewPasswordSchema = {
         },
         new_password: {
             type: 'string',
-            maxLength: 128,
-            minLength: 8,
             title: 'New Password'
         }
     },
     type: 'object',
     required: ['token', 'new_password'],
     title: 'NewPassword'
+} as const;
+
+export const NodeCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Name'
+        },
+        ip: {
+            type: 'string',
+            maxLength: 64,
+            title: 'Ip'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        tags: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tags'
+        },
+        status: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 32
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Status',
+            default: 'offline'
+        }
+    },
+    type: 'object',
+    required: ['name', 'ip'],
+    title: 'NodeCreate'
+} as const;
+
+export const NodeHeartbeatSchema = {
+    properties: {
+        node_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Node Id'
+        },
+        register_key: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Register Key'
+        }
+    },
+    type: 'object',
+    required: ['node_id', 'register_key'],
+    title: 'NodeHeartbeat',
+    description: '从节点心跳请求'
+} as const;
+
+export const NodePublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Name'
+        },
+        ip: {
+            type: 'string',
+            maxLength: 64,
+            title: 'Ip'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        tags: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tags'
+        },
+        status: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 32
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Status',
+            default: 'offline'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        last_heartbeat: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Heartbeat'
+        }
+    },
+    type: 'object',
+    required: ['name', 'ip', 'id'],
+    title: 'NodePublic'
+} as const;
+
+export const NodeRegisterSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Name'
+        },
+        host: {
+            type: 'string',
+            maxLength: 64,
+            title: 'Host'
+        },
+        register_key: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Register Key'
+        },
+        desc: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Desc'
+        },
+        tags: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tags'
+        }
+    },
+    type: 'object',
+    required: ['name', 'host', 'register_key'],
+    title: 'NodeRegister',
+    description: '从节点注册请求'
+} as const;
+
+export const NodeUpdateSchema = {
+    properties: {
+        name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Name'
+        },
+        ip: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Ip'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        tags: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tags'
+        },
+        status: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 32
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Status'
+        }
+    },
+    type: 'object',
+    title: 'NodeUpdate'
+} as const;
+
+export const NodesPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/NodePublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'NodesPublic'
 } as const;
 
 export const PrivateUserCreateSchema = {
@@ -235,6 +1127,512 @@ export const PrivateUserCreateSchema = {
     type: 'object',
     required: ['email', 'password', 'full_name'],
     title: 'PrivateUserCreate'
+} as const;
+
+export const ProjectCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        is_active: {
+            type: 'boolean',
+            title: 'Is Active',
+            default: true
+        },
+        repository_urls: {
+            anyOf: [
+                {
+                    items: {
+                        type: 'string'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Repository Urls'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'ProjectCreate'
+} as const;
+
+export const ProjectPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        is_active: {
+            type: 'boolean',
+            title: 'Is Active',
+            default: true
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        owner_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Owner Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'owner_id'],
+    title: 'ProjectPublic'
+} as const;
+
+export const ProjectUpdateSchema = {
+    properties: {
+        name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        is_active: {
+            anyOf: [
+                {
+                    type: 'boolean'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Is Active'
+        },
+        repository_urls: {
+            anyOf: [
+                {
+                    items: {
+                        type: 'string'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Repository Urls'
+        }
+    },
+    type: 'object',
+    title: 'ProjectUpdate'
+} as const;
+
+export const ProjectsPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/ProjectPublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'ProjectsPublic'
+} as const;
+
+export const PromptCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Name'
+        },
+        content: {
+            type: 'string',
+            maxLength: 5000,
+            title: 'Content'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        tags: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tags'
+        }
+    },
+    type: 'object',
+    required: ['name', 'content'],
+    title: 'PromptCreate'
+} as const;
+
+export const PromptPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Name'
+        },
+        content: {
+            type: 'string',
+            maxLength: 5000,
+            title: 'Content'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        tags: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tags'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        owner_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Owner Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'content', 'id', 'owner_id'],
+    title: 'PromptPublic'
+} as const;
+
+export const PromptUpdateSchema = {
+    properties: {
+        name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Name'
+        },
+        content: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 5000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Content'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        tags: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tags'
+        }
+    },
+    type: 'object',
+    title: 'PromptUpdate'
+} as const;
+
+export const PromptsPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/PromptPublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'PromptsPublic'
+} as const;
+
+export const RegistrationKeyPublicSchema = {
+    properties: {
+        registration_key: {
+            type: 'string',
+            title: 'Registration Key'
+        },
+        docker_command: {
+            type: 'string',
+            title: 'Docker Command'
+        }
+    },
+    type: 'object',
+    required: ['registration_key', 'docker_command'],
+    title: 'RegistrationKeyPublic',
+    description: '注册密钥响应'
+} as const;
+
+export const RepositoriesPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/RepositoryPublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'RepositoriesPublic'
+} as const;
+
+export const RepositoryCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Name'
+        },
+        url: {
+            type: 'string',
+            maxLength: 500,
+            title: 'Url'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        is_public: {
+            type: 'boolean',
+            title: 'Is Public',
+            default: false
+        }
+    },
+    type: 'object',
+    required: ['name', 'url'],
+    title: 'RepositoryCreate'
+} as const;
+
+export const RepositoryPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Name'
+        },
+        url: {
+            type: 'string',
+            maxLength: 500,
+            title: 'Url'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        is_public: {
+            type: 'boolean',
+            title: 'Is Public',
+            default: false
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        owner_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Owner Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'url', 'id', 'owner_id'],
+    title: 'RepositoryPublic'
+} as const;
+
+export const RepositoryUpdateSchema = {
+    properties: {
+        name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Name'
+        },
+        url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Url'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        is_public: {
+            anyOf: [
+                {
+                    type: 'boolean'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Is Public'
+        }
+    },
+    type: 'object',
+    title: 'RepositoryUpdate'
 } as const;
 
 export const TokenSchema = {

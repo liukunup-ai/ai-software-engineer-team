@@ -1,19 +1,22 @@
 import {
   Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Text,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { type ApiError, IssuesService } from "../../client"
-import useCustomToast from "../../hooks/useCustomToast"
-import { handleError } from "../../utils"
+import { type ApiError, IssuesService } from "@/client"
+import useCustomToast from "@/hooks/useCustomToast"
+import { handleError } from "@/utils"
+import {
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogActionTrigger,
+} from "../ui/dialog"
 
 interface DeleteIssueProps {
   id: string
@@ -23,20 +26,16 @@ interface DeleteIssueProps {
 
 const DeleteIssue = ({ id, isOpen, onClose }: DeleteIssueProps) => {
   const queryClient = useQueryClient()
-  const showToast = useCustomToast()
-
-  const deleteIssue = async (id: string) => {
-    await IssuesService.deleteIssue({ id })
-  }
+  const { showSuccessToast } = useCustomToast()
 
   const mutation = useMutation({
-    mutationFn: deleteIssue,
+    mutationFn: () => IssuesService.deleteIssue({ id }),
     onSuccess: () => {
-      showToast("Success", "Issue deleted successfully.", "success")
+      showSuccessToast("Issue deleted successfully.")
       onClose()
     },
     onError: (err: ApiError) => {
-      handleError(err, showToast)
+      handleError(err)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] })
@@ -44,35 +43,52 @@ const DeleteIssue = ({ id, isOpen, onClose }: DeleteIssueProps) => {
   })
 
   const onDelete = () => {
-    mutation.mutate(id)
+    mutation.mutate()
   }
 
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Delete Issue</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text>Are you sure you want to delete this issue?</Text>
-            <Text color="ui.danger" mt={2}>
-              This action cannot be undone.
-            </Text>
-          </ModalBody>
-          <ModalFooter gap={3}>
+    <DialogRoot
+      size={{ base: "xs", md: "sm" }}
+      placement="center"
+      open={isOpen}
+      onOpenChange={({ open }) => !open && onClose()}
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete Issue</DialogTitle>
+        </DialogHeader>
+        <DialogBody>
+          <Text>
+            Are you sure you want to delete this issue?
+          </Text>
+          <Text color="red.600" mt={2}>
+            This action cannot be undone.
+          </Text>
+        </DialogBody>
+        <DialogFooter gap={2}>
+          <DialogActionTrigger asChild>
             <Button
-              variant="danger"
-              onClick={onDelete}
-              isLoading={mutation.isPending}
+              variant="subtle"
+              colorPalette="gray"
+              disabled={mutation.isPending}
+              onClick={onClose}
             >
-              Delete
+              Cancel
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+          </DialogActionTrigger>
+          <Button
+            variant="solid"
+            colorPalette="red"
+            onClick={onDelete}
+            disabled={mutation.isPending}
+            loading={mutation.isPending}
+          >
+            Delete
+          </Button>
+        </DialogFooter>
+        <DialogCloseTrigger />
+      </DialogContent>
+    </DialogRoot>
   )
 }
 

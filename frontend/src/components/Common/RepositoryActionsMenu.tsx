@@ -29,16 +29,12 @@ export const RepositoryActionsMenu = ({ repository }: RepositoryActionsMenuProps
           </Button>
         </MenuTrigger>
         <MenuContent>
-          <MenuItem
-            onClick={() => setIsEditOpen(true)}
-            icon={<FiEdit fontSize="16px" />}
-          >
+          <MenuItem value="edit" onClick={() => setIsEditOpen(true)}>
+            <FiEdit fontSize="16px" />
             Edit
           </MenuItem>
-          <MenuItem
-            onClick={() => setIsDeleteOpen(true)}
-            icon={<FiTrash fontSize="16px" />}
-          >
+          <MenuItem value="delete" onClick={() => setIsDeleteOpen(true)}>
+            <FiTrash fontSize="16px" />
             Delete
           </MenuItem>
         </MenuContent>

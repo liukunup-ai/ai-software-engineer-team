@@ -8,15 +8,15 @@ import {
 import { useState } from "react"
 import { FiEdit, FiMoreHorizontal, FiTrash } from "react-icons/fi"
 
-import type { CredentialPublic } from "@/client"
-import DeleteCredential from "@/components/Credentials/DeleteCredential"
-import EditCredential from "@/components/Credentials/EditCredential"
+import type { ProjectPublic } from "@/client"
+import DeleteProject from "@/components/Projects/DeleteProject"
+import EditProject from "@/components/Projects/EditProject"
 
-interface CredentialActionsMenuProps {
-  credential: CredentialPublic
+interface ProjectActionsMenuProps {
+  project: ProjectPublic
 }
 
-export const CredentialActionsMenu = ({ credential }: CredentialActionsMenuProps) => {
+export const ProjectActionsMenu = ({ project }: ProjectActionsMenuProps) => {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
@@ -39,14 +39,14 @@ export const CredentialActionsMenu = ({ credential }: CredentialActionsMenuProps
           </MenuItem>
         </MenuContent>
       </MenuRoot>
-      <EditCredential
-        credential={credential}
+      <EditProject
+        project={project}
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
       />
-      <DeleteCredential
-        id={credential.id}
-        title={credential.title}
+      <DeleteProject
+        id={project.id}
+        name={project.name}
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
       />

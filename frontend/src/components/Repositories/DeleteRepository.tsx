@@ -1,7 +1,6 @@
 import {
   Button,
   DialogActionTrigger,
-  DialogTitle,
   Text,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -17,7 +16,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogRoot,
-  DialogTrigger,
+  DialogTitle,
 } from "../ui/dialog"
 
 interface DeleteRepositoryProps {
@@ -34,7 +33,7 @@ const DeleteRepository = ({
   onClose,
 }: DeleteRepositoryProps) => {
   const queryClient = useQueryClient()
-  const { showSuccessToast, showErrorToast } = useCustomToast()
+  const { showSuccessToast } = useCustomToast()
 
   const mutation = useMutation({
     mutationFn: () => RepositoriesService.deleteRepository({ id }),

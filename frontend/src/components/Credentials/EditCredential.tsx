@@ -1,14 +1,12 @@
 import {
   Button,
   DialogActionTrigger,
-  DialogTitle,
   Input,
   Text,
   VStack,
   Textarea,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
 import { type SubmitHandler, useForm } from "react-hook-form"
 
 import {
@@ -26,7 +24,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogRoot,
-  DialogTrigger,
+  DialogTitle,
 } from "../ui/dialog"
 import { Field } from "../ui/field"
 
@@ -38,7 +36,7 @@ interface EditCredentialProps {
 
 const EditCredential = ({ credential, isOpen, onClose }: EditCredentialProps) => {
   const queryClient = useQueryClient()
-  const { showSuccessToast, showErrorToast } = useCustomToast()
+  const { showSuccessToast } = useCustomToast()
   const {
     register,
     handleSubmit,

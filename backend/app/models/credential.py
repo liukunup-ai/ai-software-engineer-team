@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 from sqlmodel import Field, Relationship, SQLModel
 from typing import Optional
 from .user import User
@@ -30,11 +31,15 @@ class Credential(CredentialBase, table=True):
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
     owner: User | None = Relationship(back_populates="credentials")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 class CredentialPublic(CredentialBase):
     id: uuid.UUID
     owner_id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
 
 
 class CredentialsPublic(SQLModel):

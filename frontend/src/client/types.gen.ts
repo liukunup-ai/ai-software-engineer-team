@@ -9,8 +9,121 @@ export type Body_login_login_access_token = {
     client_secret?: (string | null);
 };
 
+/**
+ * 命令执行请求
+ */
+export type CommandRequest = {
+    command: string;
+    args?: Array<(string)>;
+};
+
+/**
+ * 命令执行结果
+ */
+export type CommandResult = {
+    command: string;
+    args: Array<(string)>;
+    exit_code: number;
+    stdout: string;
+    stderr: string;
+    duration_ms: number;
+};
+
+export type CredentialCreate = {
+    title: string;
+    username: string;
+    password: string;
+    service: string;
+    description?: (string | null);
+};
+
+export type CredentialPublic = {
+    title: string;
+    username: string;
+    password: string;
+    service: string;
+    description?: (string | null);
+    id: string;
+    owner_id: string;
+};
+
+export type CredentialsPublic = {
+    data: Array<CredentialPublic>;
+    count: number;
+};
+
+export type CredentialUpdate = {
+    title?: (string | null);
+    username?: (string | null);
+    password?: (string | null);
+    service?: (string | null);
+    description?: (string | null);
+};
+
+/**
+ * GitHub多仓库同步请求模型
+ */
+export type GitHubMultiSyncRequest = {
+    repos: Array<{
+        [key: string]: unknown;
+    }>;
+    github_token?: (string | null);
+};
+
+/**
+ * GitHub同步请求模型
+ */
+export type GitHubSyncRequest = {
+    repo_owner: string;
+    repo_name: string;
+    labels?: (Array<(string)> | null);
+};
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
+};
+
+export type IssueCreate = {
+    title: string;
+    description?: (string | null);
+    repository_url?: (string | null);
+    issue_number?: (number | null);
+    status?: string;
+    priority?: number;
+    assigned_node_id?: (string | null);
+};
+
+export type IssuePublic = {
+    title: string;
+    description?: (string | null);
+    repository_url?: (string | null);
+    issue_number?: (number | null);
+    status?: string;
+    priority?: number;
+    assigned_node_id?: (string | null);
+    id: string;
+    owner_id: string;
+    created_at: string;
+    updated_at: string;
+    started_at?: (string | null);
+    completed_at?: (string | null);
+    error_message?: (string | null);
+    result_branch?: (string | null);
+};
+
+export type IssuesPublic = {
+    data: Array<IssuePublic>;
+    count: number;
+};
+
+export type IssueUpdate = {
+    title?: (string | null);
+    description?: (string | null);
+    repository_url?: (string | null);
+    issue_number?: (number | null);
+    status?: (string | null);
+    priority?: (number | null);
+    assigned_node_id?: (string | null);
 };
 
 export type ItemCreate = {
@@ -44,11 +157,152 @@ export type NewPassword = {
     new_password: string;
 };
 
+export type NodeCreate = {
+    name: string;
+    ip: string;
+    description?: (string | null);
+    tags?: (string | null);
+    status?: (string | null);
+};
+
+/**
+ * 从节点心跳请求
+ */
+export type NodeHeartbeat = {
+    node_id: string;
+    register_key: string;
+};
+
+export type NodePublic = {
+    name: string;
+    ip: string;
+    description?: (string | null);
+    tags?: (string | null);
+    status?: (string | null);
+    id: string;
+    last_heartbeat?: (string | null);
+};
+
+/**
+ * 从节点注册请求
+ */
+export type NodeRegister = {
+    name: string;
+    host: string;
+    register_key: string;
+    desc?: (string | null);
+    tags?: (string | null);
+};
+
+export type NodesPublic = {
+    data: Array<NodePublic>;
+    count: number;
+};
+
+export type NodeUpdate = {
+    name?: (string | null);
+    ip?: (string | null);
+    description?: (string | null);
+    tags?: (string | null);
+    status?: (string | null);
+};
+
 export type PrivateUserCreate = {
     email: string;
     password: string;
     full_name: string;
     is_verified?: boolean;
+};
+
+export type ProjectCreate = {
+    name: string;
+    description?: (string | null);
+    is_active?: boolean;
+    repository_urls?: (Array<(string)> | null);
+};
+
+export type ProjectPublic = {
+    name: string;
+    description?: (string | null);
+    is_active?: boolean;
+    id: string;
+    owner_id: string;
+};
+
+export type ProjectsPublic = {
+    data: Array<ProjectPublic>;
+    count: number;
+};
+
+export type ProjectUpdate = {
+    name?: (string | null);
+    description?: (string | null);
+    is_active?: (boolean | null);
+    repository_urls?: (Array<(string)> | null);
+};
+
+export type PromptCreate = {
+    name: string;
+    content: string;
+    description?: (string | null);
+    tags?: (string | null);
+};
+
+export type PromptPublic = {
+    name: string;
+    content: string;
+    description?: (string | null);
+    tags?: (string | null);
+    id: string;
+    owner_id: string;
+};
+
+export type PromptsPublic = {
+    data: Array<PromptPublic>;
+    count: number;
+};
+
+export type PromptUpdate = {
+    name?: (string | null);
+    content?: (string | null);
+    description?: (string | null);
+    tags?: (string | null);
+};
+
+/**
+ * 注册密钥响应
+ */
+export type RegistrationKeyPublic = {
+    registration_key: string;
+    docker_command: string;
+};
+
+export type RepositoriesPublic = {
+    data: Array<RepositoryPublic>;
+    count: number;
+};
+
+export type RepositoryCreate = {
+    name: string;
+    url: string;
+    description?: (string | null);
+    is_public?: boolean;
+};
+
+export type RepositoryPublic = {
+    name: string;
+    url: string;
+    description?: (string | null);
+    is_public?: boolean;
+    id: string;
+    owner_id: string;
+};
+
+export type RepositoryUpdate = {
+    name?: (string | null);
+    url?: (string | null);
+    description?: (string | null);
+    is_public?: (boolean | null);
 };
 
 export type Token = {
@@ -106,6 +360,104 @@ export type ValidationError = {
     msg: string;
     type: string;
 };
+
+export type CredentialsReadCredentialsData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type CredentialsReadCredentialsResponse = (CredentialsPublic);
+
+export type CredentialsCreateCredentialData = {
+    requestBody: CredentialCreate;
+};
+
+export type CredentialsCreateCredentialResponse = (CredentialPublic);
+
+export type CredentialsReadCredentialData = {
+    id: string;
+};
+
+export type CredentialsReadCredentialResponse = (CredentialPublic);
+
+export type CredentialsUpdateCredentialData = {
+    id: string;
+    requestBody: CredentialUpdate;
+};
+
+export type CredentialsUpdateCredentialResponse = (CredentialPublic);
+
+export type CredentialsDeleteCredentialData = {
+    id: string;
+};
+
+export type CredentialsDeleteCredentialResponse = (Message);
+
+export type IssuesReadIssuesData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type IssuesReadIssuesResponse = (IssuesPublic);
+
+export type IssuesCreateIssueData = {
+    requestBody: IssueCreate;
+};
+
+export type IssuesCreateIssueResponse = (IssuePublic);
+
+export type IssuesReadIssueData = {
+    id: string;
+};
+
+export type IssuesReadIssueResponse = (IssuePublic);
+
+export type IssuesUpdateIssueData = {
+    id: string;
+    requestBody: IssueUpdate;
+};
+
+export type IssuesUpdateIssueResponse = (IssuePublic);
+
+export type IssuesDeleteIssueData = {
+    id: string;
+};
+
+export type IssuesDeleteIssueResponse = (Message);
+
+export type IssuesGetNextPendingIssueResponse = (IssuePublic);
+
+export type IssuesProcessIssueWorkflowData = {
+    id: string;
+    nodeId: string;
+};
+
+export type IssuesProcessIssueWorkflowResponse = (Message);
+
+export type IssuesCommitAndPushIssueData = {
+    commitMessage?: (string | null);
+    id: string;
+};
+
+export type IssuesCommitAndPushIssueResponse = ({
+    [key: string]: unknown;
+});
+
+export type IssuesSyncGithubIssuesData = {
+    requestBody: GitHubSyncRequest;
+};
+
+export type IssuesSyncGithubIssuesResponse = ({
+    [key: string]: unknown;
+});
+
+export type IssuesSyncMultipleGithubReposData = {
+    requestBody: GitHubMultiSyncRequest;
+};
+
+export type IssuesSyncMultipleGithubReposResponse = ({
+    [key: string]: unknown;
+});
 
 export type ItemsReadItemsData = {
     limit?: number;
@@ -165,11 +517,162 @@ export type LoginRecoverPasswordHtmlContentData = {
 
 export type LoginRecoverPasswordHtmlContentResponse = (string);
 
+export type NodesReadNodesData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type NodesReadNodesResponse = (NodesPublic);
+
+export type NodesCreateNodeData = {
+    requestBody: NodeCreate;
+};
+
+export type NodesCreateNodeResponse = (NodePublic);
+
+export type NodesGetRegistrationKeyResponse = (RegistrationKeyPublic);
+
+export type NodesRotateRegistrationKeyResponse = (RegistrationKeyPublic);
+
+export type NodesRegisterNodeData = {
+    requestBody: NodeRegister;
+};
+
+export type NodesRegisterNodeResponse = (NodePublic);
+
+export type NodesNodeHeartbeatData = {
+    requestBody: NodeHeartbeat;
+};
+
+export type NodesNodeHeartbeatResponse = (Message);
+
+export type NodesReadNodeData = {
+    id: string;
+};
+
+export type NodesReadNodeResponse = (NodePublic);
+
+export type NodesUpdateNodeData = {
+    id: string;
+    requestBody: NodeUpdate;
+};
+
+export type NodesUpdateNodeResponse = (NodePublic);
+
+export type NodesDeleteNodeData = {
+    id: string;
+};
+
+export type NodesDeleteNodeResponse = (Message);
+
+export type NodesExecuteCommandOnNodeData = {
+    id: string;
+    requestBody: CommandRequest;
+};
+
+export type NodesExecuteCommandOnNodeResponse = (CommandResult);
+
 export type PrivateCreateUserData = {
     requestBody: PrivateUserCreate;
 };
 
 export type PrivateCreateUserResponse = (UserPublic);
+
+export type ProjectsReadProjectsData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type ProjectsReadProjectsResponse = (ProjectsPublic);
+
+export type ProjectsCreateProjectData = {
+    requestBody: ProjectCreate;
+};
+
+export type ProjectsCreateProjectResponse = (ProjectPublic);
+
+export type ProjectsReadProjectData = {
+    id: string;
+};
+
+export type ProjectsReadProjectResponse = (ProjectPublic);
+
+export type ProjectsUpdateProjectData = {
+    id: string;
+    requestBody: ProjectUpdate;
+};
+
+export type ProjectsUpdateProjectResponse = (ProjectPublic);
+
+export type ProjectsDeleteProjectData = {
+    id: string;
+};
+
+export type ProjectsDeleteProjectResponse = (Message);
+
+export type PromptsReadPromptsData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type PromptsReadPromptsResponse = (PromptsPublic);
+
+export type PromptsCreatePromptData = {
+    requestBody: PromptCreate;
+};
+
+export type PromptsCreatePromptResponse = (PromptPublic);
+
+export type PromptsReadPromptData = {
+    id: string;
+};
+
+export type PromptsReadPromptResponse = (PromptPublic);
+
+export type PromptsUpdatePromptData = {
+    id: string;
+    requestBody: PromptUpdate;
+};
+
+export type PromptsUpdatePromptResponse = (PromptPublic);
+
+export type PromptsDeletePromptData = {
+    id: string;
+};
+
+export type PromptsDeletePromptResponse = (Message);
+
+export type RepositoriesReadRepositoriesData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type RepositoriesReadRepositoriesResponse = (RepositoriesPublic);
+
+export type RepositoriesCreateRepositoryData = {
+    requestBody: RepositoryCreate;
+};
+
+export type RepositoriesCreateRepositoryResponse = (RepositoryPublic);
+
+export type RepositoriesReadRepositoryData = {
+    id: string;
+};
+
+export type RepositoriesReadRepositoryResponse = (RepositoryPublic);
+
+export type RepositoriesUpdateRepositoryData = {
+    id: string;
+    requestBody: RepositoryUpdate;
+};
+
+export type RepositoriesUpdateRepositoryResponse = (RepositoryPublic);
+
+export type RepositoriesDeleteRepositoryData = {
+    id: string;
+};
+
+export type RepositoriesDeleteRepositoryResponse = (Message);
 
 export type UsersReadUsersData = {
     limit?: number;

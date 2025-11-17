@@ -14,6 +14,7 @@ import { z } from "zod"
 
 import { IssuesService } from "@/client"
 import AddIssue from "@/components/Issues/AddIssue"
+import { IssueActionsMenu } from "@/components/Common/IssueActionsMenu"
 import PendingItems from "@/components/Pending/PendingItems"
 import {
   PaginationItems,
@@ -21,10 +22,7 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@/components/ui/pagination.tsx"
-import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import EditIssue from "@/components/Issues/EditIssue"
-import DeleteIssue from "@/components/Issues/DeleteIssue"
 import type { IssuePublic } from "@/client"
 
 const issuesSearchSchema = z.object({
@@ -59,8 +57,6 @@ function getStatusColor(status: string) {
 function IssuesTable() {
   const navigate = useNavigate({ from: Route.fullPath })
   const { page } = Route.useSearch()
-  const [editingIssue, setEditingIssue] = useState<IssuePublic | null>(null)
-  const [deletingIssueId, setDeletingIssueId] = useState<string | null>(null)
 
   const { data, isLoading, isPlaceholderData } = useQuery({
     ...getIssuesQueryOptions({ page }),
@@ -122,8 +118,8 @@ function IssuesTable() {
                 {issue.issue_number || "N/A"}
               </Table.Cell>
               <Table.Cell>
-                <Badge colorScheme={getStatusColor(issue.status)}>
-                  {issue.status}
+                <Badge colorScheme={getStatusColor(issue.status || "pending")}>
+                  {issue.status || "pending"}
                 </Badge>
               </Table.Cell>
               <Table.Cell>
@@ -133,21 +129,7 @@ function IssuesTable() {
                 {issue.repository_url || "N/A"}
               </Table.Cell>
               <Table.Cell>
-                <Flex gap={2}>
-                  <Button
-                    size="sm"
-                    onClick={() => setEditingIssue(issue)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    colorScheme="red"
-                    onClick={() => setDeletingIssueId(issue.id)}
-                  >
-                    Delete
-                  </Button>
-                </Flex>
+                <IssueActionsMenu issue={issue} />
               </Table.Cell>
             </Table.Row>
           ))}
@@ -166,40 +148,17 @@ function IssuesTable() {
           </Flex>
         </PaginationRoot>
       </Flex>
-      
-      {editingIssue && (
-        <EditIssue
-          issue={editingIssue}
-          isOpen={!!editingIssue}
-          onClose={() => setEditingIssue(null)}
-        />
-      )}
-      
-      {deletingIssueId && (
-        <DeleteIssue
-          id={deletingIssueId}
-          isOpen={!!deletingIssueId}
-          onClose={() => setDeletingIssueId(null)}
-        />
-      )}
     </>
   )
 }
 
 function Issues() {
-  const [isAddOpen, setIsAddOpen] = useState(false)
-
   return (
     <Container maxW="full">
       <Heading size="lg" pt={12}>
         Issues Management
       </Heading>
-      <Flex justifyContent="flex-end" mt={4}>
-        <Button onClick={() => setIsAddOpen(true)}>
-          Add Issue
-        </Button>
-      </Flex>
-      <AddIssue isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} />
+      <AddIssue />
       <IssuesTable />
     </Container>
   )

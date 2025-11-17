@@ -5,11 +5,10 @@ import {
   Input,
   Text,
   VStack,
-  Switch,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
-import { type SubmitHandler, useForm } from "react-hook-form"
+import { Controller, type SubmitHandler, useForm } from "react-hook-form"
 import { FaPlus } from "react-icons/fa"
 
 import { type RepositoryCreate, RepositoriesService } from "@/client"
@@ -25,6 +24,7 @@ import {
   DialogRoot,
   DialogTrigger,
 } from "../ui/dialog"
+import { Checkbox } from "../ui/checkbox"
 import { Field } from "../ui/field"
 
 const AddRepository = () => {
@@ -32,6 +32,7 @@ const AddRepository = () => {
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
   const {
+    control,
     register,
     handleSubmit,
     reset,
@@ -135,7 +136,18 @@ const AddRepository = () => {
                 errorText={errors.is_public?.message}
                 label="Public Repository"
               >
-                <Switch {...register("is_public")} />
+                <Controller
+                  control={control}
+                  name="is_public"
+                  render={({ field }) => (
+                    <Checkbox
+                      checked={field.value ?? false}
+                      onCheckedChange={({ checked }) => field.onChange(checked)}
+                    >
+                      Is public?
+                    </Checkbox>
+                  )}
+                />
               </Field>
             </VStack>
           </DialogBody>

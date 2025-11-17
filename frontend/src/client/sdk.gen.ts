@@ -3,7 +3,332 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { CredentialsReadCredentialsData, CredentialsReadCredentialsResponse, CredentialsCreateCredentialData, CredentialsCreateCredentialResponse, CredentialsReadCredentialData, CredentialsReadCredentialResponse, CredentialsUpdateCredentialData, CredentialsUpdateCredentialResponse, CredentialsDeleteCredentialData, CredentialsDeleteCredentialResponse, IssuesReadIssuesData, IssuesReadIssuesResponse, IssuesCreateIssueData, IssuesCreateIssueResponse, IssuesReadIssueData, IssuesReadIssueResponse, IssuesUpdateIssueData, IssuesUpdateIssueResponse, IssuesDeleteIssueData, IssuesDeleteIssueResponse, IssuesGetNextPendingIssueResponse, IssuesProcessIssueWorkflowData, IssuesProcessIssueWorkflowResponse, IssuesCommitAndPushIssueData, IssuesCommitAndPushIssueResponse, IssuesSyncGithubIssuesData, IssuesSyncGithubIssuesResponse, IssuesSyncMultipleGithubReposData, IssuesSyncMultipleGithubReposResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, NodesReadNodesData, NodesReadNodesResponse, NodesCreateNodeData, NodesCreateNodeResponse, NodesGetRegistrationKeyResponse, NodesRotateRegistrationKeyResponse, NodesRegisterNodeData, NodesRegisterNodeResponse, NodesNodeHeartbeatData, NodesNodeHeartbeatResponse, NodesReadNodeData, NodesReadNodeResponse, NodesUpdateNodeData, NodesUpdateNodeResponse, NodesDeleteNodeData, NodesDeleteNodeResponse, NodesExecuteCommandOnNodeData, NodesExecuteCommandOnNodeResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProjectsReadProjectsData, ProjectsReadProjectsResponse, ProjectsCreateProjectData, ProjectsCreateProjectResponse, ProjectsReadProjectData, ProjectsReadProjectResponse, ProjectsUpdateProjectData, ProjectsUpdateProjectResponse, ProjectsDeleteProjectData, ProjectsDeleteProjectResponse, PromptsReadPromptsData, PromptsReadPromptsResponse, PromptsCreatePromptData, PromptsCreatePromptResponse, PromptsReadPromptData, PromptsReadPromptResponse, PromptsUpdatePromptData, PromptsUpdatePromptResponse, PromptsDeletePromptData, PromptsDeletePromptResponse, RepositoriesReadRepositoriesData, RepositoriesReadRepositoriesResponse, RepositoriesCreateRepositoryData, RepositoriesCreateRepositoryResponse, RepositoriesReadRepositoryData, RepositoriesReadRepositoryResponse, RepositoriesUpdateRepositoryData, RepositoriesUpdateRepositoryResponse, RepositoriesDeleteRepositoryData, RepositoriesDeleteRepositoryResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+
+export class CredentialsService {
+    /**
+     * Read Credentials
+     * Retrieve credentials.
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @returns CredentialsPublic Successful Response
+     * @throws ApiError
+     */
+    public static readCredentials(data: CredentialsReadCredentialsData = {}): CancelablePromise<CredentialsReadCredentialsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/credentials/',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Credential
+     * Create new credential.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns CredentialPublic Successful Response
+     * @throws ApiError
+     */
+    public static createCredential(data: CredentialsCreateCredentialData): CancelablePromise<CredentialsCreateCredentialResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/credentials/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Credential
+     * Get credential by ID.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns CredentialPublic Successful Response
+     * @throws ApiError
+     */
+    public static readCredential(data: CredentialsReadCredentialData): CancelablePromise<CredentialsReadCredentialResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/credentials/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Credential
+     * Update a credential.
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.requestBody
+     * @returns CredentialPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateCredential(data: CredentialsUpdateCredentialData): CancelablePromise<CredentialsUpdateCredentialResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/credentials/{id}',
+            path: {
+                id: data.id
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Credential
+     * Delete a credential.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteCredential(data: CredentialsDeleteCredentialData): CancelablePromise<CredentialsDeleteCredentialResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/credentials/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class IssuesService {
+    /**
+     * Read Issues
+     * 获取Issue列表
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @returns IssuesPublic Successful Response
+     * @throws ApiError
+     */
+    public static readIssues(data: IssuesReadIssuesData = {}): CancelablePromise<IssuesReadIssuesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/issues/',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Issue
+     * 创建新Issue
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns IssuePublic Successful Response
+     * @throws ApiError
+     */
+    public static createIssue(data: IssuesCreateIssueData): CancelablePromise<IssuesCreateIssueResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/issues/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Issue
+     * 获取指定Issue
+     * @param data The data for the request.
+     * @param data.id
+     * @returns IssuePublic Successful Response
+     * @throws ApiError
+     */
+    public static readIssue(data: IssuesReadIssueData): CancelablePromise<IssuesReadIssueResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/issues/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Issue
+     * 更新Issue
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.requestBody
+     * @returns IssuePublic Successful Response
+     * @throws ApiError
+     */
+    public static updateIssue(data: IssuesUpdateIssueData): CancelablePromise<IssuesUpdateIssueResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/issues/{id}',
+            path: {
+                id: data.id
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Issue
+     * 删除Issue
+     * @param data The data for the request.
+     * @param data.id
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteIssue(data: IssuesDeleteIssueData): CancelablePromise<IssuesDeleteIssueResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/issues/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get Next Pending Issue
+     * 获取下一个待处理的Issue（按优先级和创建时间排序）
+     * @returns IssuePublic Successful Response
+     * @throws ApiError
+     */
+    public static getNextPendingIssue(): CancelablePromise<IssuesGetNextPendingIssueResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/issues/pending/next'
+        });
+    }
+    
+    /**
+     * Process Issue Workflow
+     * 启动Issue自动处理工作流
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.nodeId
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static processIssueWorkflow(data: IssuesProcessIssueWorkflowData): CancelablePromise<IssuesProcessIssueWorkflowResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/issues/{id}/process',
+            path: {
+                id: data.id
+            },
+            query: {
+                node_id: data.nodeId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Commit And Push Issue
+     * 提交并推送Issue的代码更改
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.commitMessage
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static commitAndPushIssue(data: IssuesCommitAndPushIssueData): CancelablePromise<IssuesCommitAndPushIssueResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/issues/{id}/commit-push',
+            path: {
+                id: data.id
+            },
+            query: {
+                commit_message: data.commitMessage
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Sync Github Issues
+     * 从 GitHub 仓库同步 issues
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static syncGithubIssues(data: IssuesSyncGithubIssuesData): CancelablePromise<IssuesSyncGithubIssuesResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/issues/sync/github',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Sync Multiple Github Repos
+     * 批量从多个 GitHub 仓库同步 issues
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static syncMultipleGithubRepos(data: IssuesSyncMultipleGithubReposData): CancelablePromise<IssuesSyncMultipleGithubReposResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/issues/sync/github/batch',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
 
 export class ItemsService {
     /**
@@ -213,6 +538,207 @@ export class LoginService {
     }
 }
 
+export class NodesService {
+    /**
+     * Read Nodes
+     * Retrieve nodes. (目前仅超级管理员可见)
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @returns NodesPublic Successful Response
+     * @throws ApiError
+     */
+    public static readNodes(data: NodesReadNodesData = {}): CancelablePromise<NodesReadNodesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/nodes/',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Node
+     * Create new node (超级管理员).
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns NodePublic Successful Response
+     * @throws ApiError
+     */
+    public static createNode(data: NodesCreateNodeData): CancelablePromise<NodesCreateNodeResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/nodes/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get Registration Key
+     * 获取节点注册密钥和 Docker 运行示例命令 (超级管理员).
+     * @returns RegistrationKeyPublic Successful Response
+     * @throws ApiError
+     */
+    public static getRegistrationKey(): CancelablePromise<NodesGetRegistrationKeyResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/nodes/registration-key'
+        });
+    }
+    
+    /**
+     * Rotate Registration Key
+     * 旋转节点注册密钥 (超级管理员). 返回新密钥与新 Docker 示例命令。
+     * @returns RegistrationKeyPublic Successful Response
+     * @throws ApiError
+     */
+    public static rotateRegistrationKey(): CancelablePromise<NodesRotateRegistrationKeyResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/nodes/registration-key/rotate'
+        });
+    }
+    
+    /**
+     * Register Node
+     * 从节点自动注册接口 (无需认证, 通过 register_key 验证).
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns NodePublic Successful Response
+     * @throws ApiError
+     */
+    public static registerNode(data: NodesRegisterNodeData): CancelablePromise<NodesRegisterNodeResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/nodes/register',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Node Heartbeat
+     * 从节点心跳接口 (无需认证, 通过 register_key 验证).
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static nodeHeartbeat(data: NodesNodeHeartbeatData): CancelablePromise<NodesNodeHeartbeatResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/nodes/heartbeat',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Node
+     * Get node by ID.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns NodePublic Successful Response
+     * @throws ApiError
+     */
+    public static readNode(data: NodesReadNodeData): CancelablePromise<NodesReadNodeResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/nodes/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Node
+     * Update a node.
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.requestBody
+     * @returns NodePublic Successful Response
+     * @throws ApiError
+     */
+    public static updateNode(data: NodesUpdateNodeData): CancelablePromise<NodesUpdateNodeResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/nodes/{id}',
+            path: {
+                id: data.id
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Node
+     * Delete a node.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteNode(data: NodesDeleteNodeData): CancelablePromise<NodesDeleteNodeResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/nodes/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Execute Command On Node
+     * 在指定节点上执行命令
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.requestBody
+     * @returns CommandResult Successful Response
+     * @throws ApiError
+     */
+    public static executeCommandOnNode(data: NodesExecuteCommandOnNodeData): CancelablePromise<NodesExecuteCommandOnNodeResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/nodes/{id}/execute',
+            path: {
+                id: data.id
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
 export class PrivateService {
     /**
      * Create User
@@ -228,6 +754,339 @@ export class PrivateService {
             url: '/api/v1/private/users/',
             body: data.requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class ProjectsService {
+    /**
+     * Read Projects
+     * Retrieve projects.
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @returns ProjectsPublic Successful Response
+     * @throws ApiError
+     */
+    public static readProjects(data: ProjectsReadProjectsData = {}): CancelablePromise<ProjectsReadProjectsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/projects/',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Project
+     * Create new project.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns ProjectPublic Successful Response
+     * @throws ApiError
+     */
+    public static createProject(data: ProjectsCreateProjectData): CancelablePromise<ProjectsCreateProjectResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/projects/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Project
+     * Get project by ID.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns ProjectPublic Successful Response
+     * @throws ApiError
+     */
+    public static readProject(data: ProjectsReadProjectData): CancelablePromise<ProjectsReadProjectResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/projects/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Project
+     * Update a project.
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.requestBody
+     * @returns ProjectPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateProject(data: ProjectsUpdateProjectData): CancelablePromise<ProjectsUpdateProjectResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/projects/{id}',
+            path: {
+                id: data.id
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Project
+     * Delete a project.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteProject(data: ProjectsDeleteProjectData): CancelablePromise<ProjectsDeleteProjectResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/projects/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class PromptsService {
+    /**
+     * Read Prompts
+     * Retrieve prompts.
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @returns PromptsPublic Successful Response
+     * @throws ApiError
+     */
+    public static readPrompts(data: PromptsReadPromptsData = {}): CancelablePromise<PromptsReadPromptsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/prompts/',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Prompt
+     * Create new prompt.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns PromptPublic Successful Response
+     * @throws ApiError
+     */
+    public static createPrompt(data: PromptsCreatePromptData): CancelablePromise<PromptsCreatePromptResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/prompts/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Prompt
+     * Get prompt by ID.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns PromptPublic Successful Response
+     * @throws ApiError
+     */
+    public static readPrompt(data: PromptsReadPromptData): CancelablePromise<PromptsReadPromptResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/prompts/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Prompt
+     * Update a prompt.
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.requestBody
+     * @returns PromptPublic Successful Response
+     * @throws ApiError
+     */
+    public static updatePrompt(data: PromptsUpdatePromptData): CancelablePromise<PromptsUpdatePromptResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/prompts/{id}',
+            path: {
+                id: data.id
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Prompt
+     * Delete a prompt.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deletePrompt(data: PromptsDeletePromptData): CancelablePromise<PromptsDeletePromptResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/prompts/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class RepositoriesService {
+    /**
+     * Read Repositories
+     * Retrieve repositories.
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @returns RepositoriesPublic Successful Response
+     * @throws ApiError
+     */
+    public static readRepositories(data: RepositoriesReadRepositoriesData = {}): CancelablePromise<RepositoriesReadRepositoriesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/repositories/',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Repository
+     * Create new repository.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns RepositoryPublic Successful Response
+     * @throws ApiError
+     */
+    public static createRepository(data: RepositoriesCreateRepositoryData): CancelablePromise<RepositoriesCreateRepositoryResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/repositories/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Repository
+     * Get repository by ID.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns RepositoryPublic Successful Response
+     * @throws ApiError
+     */
+    public static readRepository(data: RepositoriesReadRepositoryData): CancelablePromise<RepositoriesReadRepositoryResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/repositories/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Repository
+     * Update a repository.
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.requestBody
+     * @returns RepositoryPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateRepository(data: RepositoriesUpdateRepositoryData): CancelablePromise<RepositoriesUpdateRepositoryResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/repositories/{id}',
+            path: {
+                id: data.id
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Repository
+     * Delete a repository.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteRepository(data: RepositoriesDeleteRepositoryData): CancelablePromise<RepositoriesDeleteRepositoryResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/repositories/{id}',
+            path: {
+                id: data.id
+            },
             errors: {
                 422: 'Validation Error'
             }
