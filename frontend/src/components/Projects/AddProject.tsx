@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
-import { Controller, type SubmitHandler, useForm } from "react-hook-form"
+import { type SubmitHandler, useForm } from "react-hook-form"
 import { FaPlus } from "react-icons/fa"
 import { FiX, FiPlus } from "react-icons/fi"
 
@@ -29,13 +29,11 @@ import {
   DialogRoot,
   DialogTrigger,
 } from "../ui/dialog"
-import { Checkbox } from "../ui/checkbox"
 import { Field } from "../ui/field"
 
 interface ProjectFormData {
   name: string
   description?: string | null
-  is_active?: boolean
   repository_urls?: string[]
 }
 
@@ -45,7 +43,6 @@ const AddProject = () => {
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
   const {
-    control,
     register,
     handleSubmit,
     reset,
@@ -56,7 +53,6 @@ const AddProject = () => {
     defaultValues: {
       name: "",
       description: "",
-      is_active: true,
     },
   })
 
@@ -151,25 +147,6 @@ const AddProject = () => {
                 <Textarea
                   {...register("description")}
                   placeholder="Description"
-                />
-              </Field>
-
-              <Field
-                invalid={!!errors.is_active}
-                errorText={errors.is_active?.message}
-                label="Active"
-              >
-                <Controller
-                  control={control}
-                  name="is_active"
-                  render={({ field }) => (
-                    <Checkbox
-                      checked={field.value ?? false}
-                      onCheckedChange={({ checked }) => field.onChange(checked)}
-                    >
-                      Is active?
-                    </Checkbox>
-                  )}
                 />
               </Field>
 

@@ -88,7 +88,6 @@ function ProjectsTable() {
           <Table.Row>
             <Table.ColumnHeader w="sm">Name</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Description</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Active</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Actions</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
@@ -104,9 +103,6 @@ function ProjectsTable() {
                 maxW="30%"
               >
                 {project.description || "N/A"}
-              </Table.Cell>
-              <Table.Cell>
-                {project.is_active ? "Yes" : "No"}
               </Table.Cell>
               <Table.Cell>
                 <ProjectActionsMenu project={project} />

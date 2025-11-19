@@ -7,7 +7,7 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Controller, type SubmitHandler, useForm } from "react-hook-form"
+import { type SubmitHandler, useForm } from "react-hook-form"
 
 import {
   type ProjectUpdate,
@@ -26,7 +26,6 @@ import {
   DialogRoot,
   DialogTitle,
 } from "../ui/dialog"
-import { Checkbox } from "../ui/checkbox"
 import { Field } from "../ui/field"
 
 interface EditProjectProps {
@@ -39,7 +38,6 @@ const EditProject = ({ project, isOpen, onClose }: EditProjectProps) => {
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
   const {
-    control,
     register,
     handleSubmit,
     reset,
@@ -50,7 +48,6 @@ const EditProject = ({ project, isOpen, onClose }: EditProjectProps) => {
     defaultValues: {
       name: project.name,
       description: project.description || "",
-      is_active: project.is_active,
     },
   })
 
@@ -123,25 +120,6 @@ const EditProject = ({ project, isOpen, onClose }: EditProjectProps) => {
                 <Textarea
                   {...register("description")}
                   placeholder="Description"
-                />
-              </Field>
-
-              <Field
-                invalid={!!errors.is_active}
-                errorText={errors.is_active?.message}
-                label="Active"
-              >
-                <Controller
-                  control={control}
-                  name="is_active"
-                  render={({ field }) => (
-                    <Checkbox
-                      checked={field.value ?? false}
-                      onCheckedChange={({ checked }) => field.onChange(checked)}
-                    >
-                      Is active?
-                    </Checkbox>
-                  )}
                 />
               </Field>
             </VStack>
