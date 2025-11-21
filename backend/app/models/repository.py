@@ -1,4 +1,5 @@
 import uuid
+
 from typing import TYPE_CHECKING, Optional
 from datetime import datetime
 from typing import Optional
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
 
 class RepositoryBase(SQLModel):
     name: str = Field(min_length=1, max_length=255)
-    url: str = Field(max_length=500)
+    url: str = Field(max_length=1023)
     description: Optional[str] = Field(default=None, max_length=500)
     is_public: bool = Field(default=False)
 

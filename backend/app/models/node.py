@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional, List
 from datetime import datetime
 from sqlmodel import Field, Relationship, SQLModel
 
-from .credential_node_link import CredentialNodeLink
+from .common import CredentialNodeLink
 
 if TYPE_CHECKING:
     from .user import User

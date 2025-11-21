@@ -31,7 +31,7 @@ def create_node(session: SessionDep, current_user: CurrentUser, node_in: NodeCre
     """Create new node (超级管理员)."""
     if not current_user.is_superuser:
         raise HTTPException(status_code=403, detail="Not enough permissions")
-    node = Node(**node_in.model_dump())
+    node = Node(**node_in.model_dump(), owner_id=current_user.id)
     session.add(node)
     session.commit()
     session.refresh(node)

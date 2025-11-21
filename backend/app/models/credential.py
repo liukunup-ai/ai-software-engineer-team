@@ -4,15 +4,15 @@ from typing import TYPE_CHECKING, Optional, List
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-
 from pydantic import ConfigDict
 from sqlmodel import Field, Relationship, SQLModel
 
-from .credential_node_link import CredentialNodeLink
+from .common import CredentialNodeLink
+from .node import NodePublic
 
 if TYPE_CHECKING:
     from .user import User
-    from .node import Node, NodePublic
+    from .node import Node
 
 
 
@@ -59,7 +59,7 @@ class CredentialPublic(CredentialBase):
     owner_id: uuid.UUID
     created_at: datetime
     updated_at: datetime
-    nodes: List["NodePublic"] = Field(default_factory=list)
+    nodes: List[NodePublic] = Field(default_factory=list)
 
 
 class CredentialsPublic(SQLModel):
