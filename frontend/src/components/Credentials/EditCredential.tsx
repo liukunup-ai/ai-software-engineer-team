@@ -2,19 +2,23 @@ import {
   Button,
   DialogActionTrigger,
   Input,
+  SimpleGrid,
+  Spinner,
   Text,
   VStack,
-  Textarea,
 } from "@chakra-ui/react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { type SubmitHandler, useForm } from "react-hook-form"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Controller, type SubmitHandler, useForm } from "react-hook-form"
 
 import {
-  type CredentialUpdate,
+  type CredentialCategory,
   type CredentialPublic,
   CredentialsService,
+  type CredentialUpdate,
+  NodesService,
 } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
+import { CREDENTIAL_CATEGORY_OPTIONS } from "@/constants/credentials"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 import {
@@ -27,6 +31,8 @@ import {
   DialogTitle,
 } from "../ui/dialog"
 import { Field } from "../ui/field"
+import { Checkbox } from "../ui/checkbox"
+import { Radio, RadioGroup } from "../ui/radio"
 
 interface EditCredentialProps {
   credential: CredentialPublic
@@ -34,25 +40,36 @@ interface EditCredentialProps {
   onClose: () => void
 }
 
-const EditCredential = ({ credential, isOpen, onClose }: EditCredentialProps) => {
+const EditCredential = ({
+  credential,
+  isOpen,
+  onClose,
+}: EditCredentialProps) => {
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
   const {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isDirty, isValid, isSubmitting },
   } = useForm<CredentialUpdate>({
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
       title: credential.title,
-      username: credential.username,
-      password: credential.password,
-      service: credential.service,
-      description: credential.description || "",
+      category: credential.category,
+      pat: credential.pat,
+      is_disabled: credential.is_disabled,
+      node_ids: credential.nodes?.map((node) => node.id) ?? [],
     },
   })
+
+  const nodesQuery = useQuery({
+    queryKey: ["nodes", "options"],
+    queryFn: () => NodesService.readNodes({ skip: 0, limit: 100 }),
+  })
+  const nodes = nodesQuery.data?.data ?? []
 
   const mutation = useMutation({
     mutationFn: (data: CredentialUpdate) =>
@@ -98,7 +115,7 @@ const EditCredential = ({ credential, isOpen, onClose }: EditCredentialProps) =>
             <DialogTitle>Edit Credential</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <Text mb={4}>Edit the credential details.</Text>
+            <Text mb={4}>Update the credential and node assignments.</Text>
             <VStack gap={4}>
               <Field
                 required
@@ -117,58 +134,106 @@ const EditCredential = ({ credential, isOpen, onClose }: EditCredentialProps) =>
 
               <Field
                 required
-                invalid={!!errors.username}
-                errorText={errors.username?.message}
-                label="Username"
+                invalid={!!errors.category}
+                errorText={errors.category?.message}
+                label="Category"
               >
-                <Input
-                  {...register("username", {
-                    required: "Username is required.",
-                  })}
-                  placeholder="Username"
-                  type="text"
+                <Controller
+                  name="category"
+                  control={control}
+                  rules={{ required: "Category is required." }}
+                  render={({ field }) => (
+                    <RadioGroup
+                      value={field.value ?? "github-copilot"}
+                      onValueChange={({ value }) =>
+                        field.onChange(
+                          (value ?? "github-copilot") as CredentialCategory,
+                        )
+                      }
+                    >
+                      <SimpleGrid columns={{ base: 1, md: 3 }} gap={2}>
+                        {CREDENTIAL_CATEGORY_OPTIONS.map((option) => (
+                          <Radio key={option.value} value={option.value}>
+                            {option.label}
+                          </Radio>
+                        ))}
+                      </SimpleGrid>
+                    </RadioGroup>
+                  )}
                 />
               </Field>
 
               <Field
                 required
-                invalid={!!errors.password}
-                errorText={errors.password?.message}
-                label="Password"
+                invalid={!!errors.pat}
+                errorText={errors.pat?.message}
+                label="Personal Access Token"
               >
                 <Input
-                  {...register("password", {
-                    required: "Password is required.",
+                  {...register("pat", {
+                    required: "Token is required.",
                   })}
-                  placeholder="Password"
+                  placeholder="ghp_..."
                   type="password"
                 />
               </Field>
 
-              <Field
-                required
-                invalid={!!errors.service}
-                errorText={errors.service?.message}
-                label="Service"
-              >
-                <Input
-                  {...register("service", {
-                    required: "Service is required.",
-                  })}
-                  placeholder="Service"
-                  type="text"
+              <Field label="Disable Credential">
+                <Controller
+                  control={control}
+                  name="is_disabled"
+                  render={({ field }) => (
+                    <Checkbox
+                      checked={field.value ?? false}
+                      onCheckedChange={({ checked }) =>
+                        field.onChange(!!checked)
+                      }
+                    >
+                      Temporarily disable this credential
+                    </Checkbox>
+                  )}
                 />
               </Field>
 
-              <Field
-                invalid={!!errors.description}
-                errorText={errors.description?.message}
-                label="Description"
-              >
-                <Textarea
-                  {...register("description")}
-                  placeholder="Description"
-                />
+              <Field label="Used by Nodes">
+                {nodesQuery.isLoading ? (
+                  <Spinner size="sm" />
+                ) : nodesQuery.isError ? (
+                  <Text color="red.500">Failed to load nodes.</Text>
+                ) : nodes.length === 0 ? (
+                  <Text color="fg.muted">No nodes available yet.</Text>
+                ) : (
+                  <Controller
+                    name="node_ids"
+                    control={control}
+                    render={({ field }) => {
+                      const selected = field.value ?? []
+
+                      const toggleNode = (nodeId: string, checked: boolean) => {
+                        const next = checked
+                          ? [...selected, nodeId]
+                          : selected.filter((value) => value !== nodeId)
+                        field.onChange(next)
+                      }
+
+                      return (
+                        <SimpleGrid columns={{ base: 1, md: 2 }} gap={2}>
+                          {nodes.map((node) => (
+                            <Checkbox
+                              key={node.id}
+                              checked={selected.includes(node.id)}
+                              onCheckedChange={({ checked }) =>
+                                toggleNode(node.id, !!checked)
+                              }
+                            >
+                              {node.name}
+                            </Checkbox>
+                          ))}
+                        </SimpleGrid>
+                      )
+                    }}
+                  />
+                )}
               </Field>
             </VStack>
           </DialogBody>

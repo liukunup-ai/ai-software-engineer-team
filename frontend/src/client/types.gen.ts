@@ -29,22 +29,26 @@ export type CommandResult = {
     duration_ms: number;
 };
 
+export type CredentialCategory = 'github-copilot' | 'cursor' | 'cluade-code';
+
 export type CredentialCreate = {
     title: string;
-    username: string;
-    password: string;
-    service: string;
-    description?: (string | null);
+    category?: CredentialCategory;
+    pat: string;
+    is_disabled?: boolean;
+    node_ids?: Array<(string)>;
 };
 
 export type CredentialPublic = {
     title: string;
-    username: string;
-    password: string;
-    service: string;
-    description?: (string | null);
+    category?: CredentialCategory;
+    pat: string;
+    is_disabled?: boolean;
     id: string;
     owner_id: string;
+    created_at: string;
+    updated_at: string;
+    nodes?: Array<NodePublic>;
 };
 
 export type CredentialsPublic = {
@@ -54,10 +58,10 @@ export type CredentialsPublic = {
 
 export type CredentialUpdate = {
     title?: (string | null);
-    username?: (string | null);
-    password?: (string | null);
-    service?: (string | null);
-    description?: (string | null);
+    category?: (CredentialCategory | null);
+    pat?: (string | null);
+    is_disabled?: (boolean | null);
+    node_ids?: (Array<(string)> | null);
 };
 
 /**
@@ -227,6 +231,8 @@ export type ProjectPublic = {
     is_active?: boolean;
     id: string;
     owner_id: string;
+    created_at: string;
+    updated_at: string;
 };
 
 export type ProjectsPublic = {
@@ -255,6 +261,8 @@ export type PromptPublic = {
     tags?: (string | null);
     id: string;
     owner_id: string;
+    created_at: string;
+    updated_at: string;
 };
 
 export type PromptsPublic = {
@@ -296,6 +304,8 @@ export type RepositoryPublic = {
     is_public?: boolean;
     id: string;
     owner_id: string;
+    created_at: string;
+    updated_at: string;
 };
 
 export type RepositoryUpdate = {

@@ -1,76 +1,56 @@
-import { NodesService as SDKNodesService } from './sdk.gen';
-import type { NodePublic, NodeCreate, NodeUpdate, NodeRegister, NodeHeartbeat, CommandRequest } from './types.gen';
+import { NodesService as SDKNodesService } from "./sdk.gen"
 
-export type { NodePublic };
+export type { NodeCreate, NodePublic } from "./types.gen"
 
 export class NodesService {
-  /**
-   * Read all nodes
-   */
-  static readNodes(skip?: number, limit?: number) {
-    return SDKNodesService.readNodes({ skip, limit });
-  }
+    /**
+     * Read Nodes
+     * 获取节点列表
+     */
+    public static readNodes(skip?: number, limit: number = 100) {
+        return SDKNodesService.readNodes({ skip, limit })
+    }
 
-  /**
-   * Create a new node
-   */
-  static createNode(requestBody: NodeCreate) {
-    return SDKNodesService.createNode({ requestBody });
-  }
+    /**
+     * Create Node
+     * 创建节点
+     */
+    public static createNode(requestBody: any) {
+        return SDKNodesService.createNode({ requestBody })
+    }
 
-  /**
-   * Get registration key for node
-   */
-  static getRegistrationKey() {
-    return SDKNodesService.getRegistrationKey();
-  }
+    /**
+     * 获取或刷新注册密钥
+     */
+    public static getRegistrationKey() {
+        return SDKNodesService.getRegistrationKey()
+    }
 
-  /**
-   * Rotate registration key
-   */
-  static rotateRegistrationKey() {
-    return SDKNodesService.rotateRegistrationKey();
-  }
+    public static rotateRegistrationKey() {
+        return SDKNodesService.rotateRegistrationKey()
+    }
 
-  /**
-   * Register a new node
-   */
-  static registerNode(requestBody: NodeRegister) {
-    return SDKNodesService.registerNode({ requestBody });
-  }
+    public static registerNode(requestBody: any) {
+        return SDKNodesService.registerNode({ requestBody })
+    }
 
-  /**
-   * Send node heartbeat
-   */
-  static nodeHeartbeat(requestBody: NodeHeartbeat) {
-    return SDKNodesService.nodeHeartbeat({ requestBody });
-  }
+    public static nodeHeartbeat(requestBody: any) {
+        return SDKNodesService.nodeHeartbeat({ requestBody })
+    }
 
-  /**
-   * Read a node by ID
-   */
-  static readNode(id: string) {
-    return SDKNodesService.readNode({ id });
-  }
+    public static readNode(id: string) {
+        return SDKNodesService.readNode({ id })
+    }
 
-  /**
-   * Update a node
-   */
-  static updateNode(id: string, requestBody: NodeUpdate) {
-    return SDKNodesService.updateNode({ id, requestBody });
-  }
+    public static updateNode(id: string, requestBody: any) {
+        return SDKNodesService.updateNode({ id, requestBody })
+    }
 
-  /**
-   * Delete a node
-   */
-  static deleteNode(id: string) {
-    return SDKNodesService.deleteNode({ id });
-  }
+    public static deleteNode(id: string) {
+        return SDKNodesService.deleteNode({ id })
+    }
 
-  /**
-   * Execute a command on a node
-   */
-  static executeCommandOnNode(id: string, requestBody: CommandRequest) {
-    return SDKNodesService.executeCommandOnNode({ id, requestBody });
-  }
+    public static executeCommandOnNode(id: string, requestBody: any) {
+        return SDKNodesService.executeCommandOnNode({ id, requestBody })
+    }
 }

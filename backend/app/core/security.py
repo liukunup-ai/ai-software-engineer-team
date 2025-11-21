@@ -2,6 +2,15 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import jwt
+
+# Fix passlib compatibility with bcrypt 4.x
+# bcrypt 4.x removed __about__ module, but passlib still tries to access it
+import bcrypt
+if not hasattr(bcrypt, '__about__'):
+    class _About:
+        __version__ = bcrypt.__version__
+    bcrypt.__about__ = _About()
+
 from passlib.context import CryptContext
 
 from app.core.config import settings

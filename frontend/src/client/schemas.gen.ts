@@ -112,6 +112,12 @@ export const CommandResultSchema = {
     description: '命令执行结果'
 } as const;
 
+export const CredentialCategorySchema = {
+    type: 'string',
+    enum: ['github-copilot', 'cursor', 'cluade-code'],
+    title: 'CredentialCategory'
+} as const;
+
 export const CredentialCreateSchema = {
     properties: {
         title: {
@@ -120,36 +126,32 @@ export const CredentialCreateSchema = {
             minLength: 1,
             title: 'Title'
         },
-        username: {
+        category: {
+            '$ref': '#/components/schemas/CredentialCategory',
+            default: 'github-copilot'
+        },
+        pat: {
             type: 'string',
             maxLength: 255,
-            title: 'Username'
+            minLength: 1,
+            title: 'Pat'
         },
-        password: {
-            type: 'string',
-            maxLength: 255,
-            title: 'Password'
+        is_disabled: {
+            type: 'boolean',
+            title: 'Is Disabled',
+            default: false
         },
-        service: {
-            type: 'string',
-            maxLength: 255,
-            title: 'Service'
-        },
-        description: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 500
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Description'
+        node_ids: {
+            items: {
+                type: 'string',
+                format: 'uuid'
+            },
+            type: 'array',
+            title: 'Node Ids'
         }
     },
     type: 'object',
-    required: ['title', 'username', 'password', 'service'],
+    required: ['title', 'pat'],
     title: 'CredentialCreate'
 } as const;
 
@@ -161,32 +163,20 @@ export const CredentialPublicSchema = {
             minLength: 1,
             title: 'Title'
         },
-        username: {
+        category: {
+            '$ref': '#/components/schemas/CredentialCategory',
+            default: 'github-copilot'
+        },
+        pat: {
             type: 'string',
             maxLength: 255,
-            title: 'Username'
+            minLength: 1,
+            title: 'Pat'
         },
-        password: {
-            type: 'string',
-            maxLength: 255,
-            title: 'Password'
-        },
-        service: {
-            type: 'string',
-            maxLength: 255,
-            title: 'Service'
-        },
-        description: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 500
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Description'
+        is_disabled: {
+            type: 'boolean',
+            title: 'Is Disabled',
+            default: false
         },
         id: {
             type: 'string',
@@ -197,10 +187,27 @@ export const CredentialPublicSchema = {
             type: 'string',
             format: 'uuid',
             title: 'Owner Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        },
+        nodes: {
+            items: {
+                '$ref': '#/components/schemas/NodePublic'
+            },
+            type: 'array',
+            title: 'Nodes'
         }
     },
     type: 'object',
-    required: ['title', 'username', 'password', 'service', 'id', 'owner_id'],
+    required: ['title', 'pat', 'id', 'owner_id', 'created_at', 'updated_at'],
     title: 'CredentialPublic'
 } as const;
 
@@ -219,7 +226,17 @@ export const CredentialUpdateSchema = {
             ],
             title: 'Title'
         },
-        username: {
+        category: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/CredentialCategory'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        pat: {
             anyOf: [
                 {
                     type: 'string',
@@ -229,43 +246,33 @@ export const CredentialUpdateSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Username'
+            title: 'Pat'
         },
-        password: {
+        is_disabled: {
             anyOf: [
                 {
-                    type: 'string',
-                    maxLength: 255
+                    type: 'boolean'
                 },
                 {
                     type: 'null'
                 }
             ],
-            title: 'Password'
+            title: 'Is Disabled'
         },
-        service: {
+        node_ids: {
             anyOf: [
                 {
-                    type: 'string',
-                    maxLength: 255
+                    items: {
+                        type: 'string',
+                        format: 'uuid'
+                    },
+                    type: 'array'
                 },
                 {
                     type: 'null'
                 }
             ],
-            title: 'Service'
-        },
-        description: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 500
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Description'
+            title: 'Node Ids'
         }
     },
     type: 'object',
@@ -295,7 +302,6 @@ export const GitHubMultiSyncRequestSchema = {
     properties: {
         repos: {
             items: {
-                additionalProperties: true,
                 type: 'object'
             },
             type: 'array',
@@ -1208,10 +1214,20 @@ export const ProjectPublicSchema = {
             type: 'string',
             format: 'uuid',
             title: 'Owner Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
         }
     },
     type: 'object',
-    required: ['name', 'id', 'owner_id'],
+    required: ['name', 'id', 'owner_id', 'created_at', 'updated_at'],
     title: 'ProjectPublic'
 } as const;
 
@@ -1380,10 +1396,20 @@ export const PromptPublicSchema = {
             type: 'string',
             format: 'uuid',
             title: 'Owner Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
         }
     },
     type: 'object',
-    required: ['name', 'content', 'id', 'owner_id'],
+    required: ['name', 'content', 'id', 'owner_id', 'created_at', 'updated_at'],
     title: 'PromptPublic'
 } as const;
 
@@ -1573,10 +1599,20 @@ export const RepositoryPublicSchema = {
             type: 'string',
             format: 'uuid',
             title: 'Owner Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
         }
     },
     type: 'object',
-    required: ['name', 'url', 'id', 'owner_id'],
+    required: ['name', 'url', 'id', 'owner_id', 'created_at', 'updated_at'],
     title: 'RepositoryPublic'
 } as const;
 

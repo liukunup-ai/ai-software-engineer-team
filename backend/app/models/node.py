@@ -1,6 +1,14 @@
 import uuid
+from typing import TYPE_CHECKING, Optional, List
 from datetime import datetime
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
+
+from .credential_node_link import CredentialNodeLink
+
+if TYPE_CHECKING:
+    from .user import User
+    from .credential import Credential
+
 
 class NodeBase(SQLModel):
     name: str = Field(index=True, max_length=255)
@@ -21,7 +29,16 @@ class NodeUpdate(SQLModel):
 
 class Node(NodeBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    owner: Optional["User"] = Relationship(back_populates="nodes")
+
     last_heartbeat: datetime | None = Field(default=None)
+
+    credentials: List["Credential"] = Relationship(back_populates="nodes", link_model=CredentialNodeLink)
+
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
 
 class NodePublic(NodeBase):
     id: uuid.UUID

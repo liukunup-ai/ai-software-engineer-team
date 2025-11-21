@@ -3,17 +3,24 @@ import {
   DialogActionTrigger,
   DialogTitle,
   Input,
+  SimpleGrid,
+  Spinner,
   Text,
   VStack,
-  Textarea,
 } from "@chakra-ui/react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
-import { type SubmitHandler, useForm } from "react-hook-form"
+import { Controller, type SubmitHandler, useForm } from "react-hook-form"
 import { FaPlus } from "react-icons/fa"
 
-import { type CredentialCreate, CredentialsService } from "@/client"
+import {
+  type CredentialCategory,
+  type CredentialCreate,
+  CredentialsService,
+  NodesService,
+} from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
+import { CREDENTIAL_CATEGORY_OPTIONS } from "@/constants/credentials"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 import {
@@ -26,6 +33,8 @@ import {
   DialogTrigger,
 } from "../ui/dialog"
 import { Field } from "../ui/field"
+import { Checkbox } from "../ui/checkbox"
+import { Radio, RadioGroup } from "../ui/radio"
 
 const AddCredential = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -35,18 +44,25 @@ const AddCredential = () => {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isValid, isSubmitting },
   } = useForm<CredentialCreate>({
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
       title: "",
-      username: "",
-      password: "",
-      service: "",
-      description: "",
+      category: "github-copilot" as CredentialCategory,
+      pat: "",
+      is_disabled: false,
+      node_ids: [],
     },
   })
+
+  const nodesQuery = useQuery({
+    queryKey: ["nodes", "options"],
+    queryFn: () => NodesService.readNodes({ skip: 0, limit: 100 }),
+  })
+  const nodes = nodesQuery.data?.data ?? []
 
   const mutation = useMutation({
     mutationFn: (data: CredentialCreate) =>
@@ -87,7 +103,9 @@ const AddCredential = () => {
             <DialogTitle>Add Credential</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <Text mb={4}>Fill in the details to add a new credential.</Text>
+            <Text mb={4}>
+              Provide token details and select where it can run.
+            </Text>
             <VStack gap={4}>
               <Field
                 required
@@ -106,58 +124,110 @@ const AddCredential = () => {
 
               <Field
                 required
-                invalid={!!errors.username}
-                errorText={errors.username?.message}
-                label="Username"
+                invalid={!!errors.category}
+                errorText={errors.category?.message}
+                label="Category"
               >
-                <Input
-                  {...register("username", {
-                    required: "Username is required.",
-                  })}
-                  placeholder="Username"
-                  type="text"
+                <Controller
+                  name="category"
+                  control={control}
+                  rules={{ required: "Category is required." }}
+                  render={({ field }) => (
+                    <RadioGroup
+                      value={field.value ?? "github-copilot"}
+                      onValueChange={({ value }) =>
+                        field.onChange(
+                          (value ?? "github-copilot") as CredentialCategory,
+                        )
+                      }
+                    >
+                      <SimpleGrid columns={{ base: 1, md: 3 }} gap={2}>
+                        {CREDENTIAL_CATEGORY_OPTIONS.map((option) => (
+                          <Radio key={option.value} value={option.value}>
+                            {option.label}
+                          </Radio>
+                        ))}
+                      </SimpleGrid>
+                    </RadioGroup>
+                  )}
                 />
               </Field>
 
               <Field
                 required
-                invalid={!!errors.password}
-                errorText={errors.password?.message}
-                label="Password"
+                invalid={!!errors.pat}
+                errorText={errors.pat?.message}
+                label="Personal Access Token"
               >
                 <Input
-                  {...register("password", {
-                    required: "Password is required.",
+                  {...register("pat", {
+                    required: "Token is required.",
+                    minLength: {
+                      value: 8,
+                      message: "Must be at least 8 characters.",
+                    },
                   })}
-                  placeholder="Password"
+                  placeholder="ghp_..."
                   type="password"
                 />
               </Field>
 
-              <Field
-                required
-                invalid={!!errors.service}
-                errorText={errors.service?.message}
-                label="Service"
-              >
-                <Input
-                  {...register("service", {
-                    required: "Service is required.",
-                  })}
-                  placeholder="Service"
-                  type="text"
+              <Field label="Disable Credential">
+                <Controller
+                  control={control}
+                  name="is_disabled"
+                  render={({ field }) => (
+                    <Checkbox
+                      checked={field.value ?? false}
+                      onCheckedChange={({ checked }) =>
+                        field.onChange(!!checked)
+                      }
+                    >
+                      Temporarily disable this credential
+                    </Checkbox>
+                  )}
                 />
               </Field>
 
-              <Field
-                invalid={!!errors.description}
-                errorText={errors.description?.message}
-                label="Description"
-              >
-                <Textarea
-                  {...register("description")}
-                  placeholder="Description"
-                />
+              <Field label="Used by Nodes">
+                {nodesQuery.isLoading ? (
+                  <Spinner size="sm" />
+                ) : nodesQuery.isError ? (
+                  <Text color="red.500">Failed to load nodes.</Text>
+                ) : nodes.length === 0 ? (
+                  <Text color="fg.muted">No nodes available yet.</Text>
+                ) : (
+                  <Controller
+                    name="node_ids"
+                    control={control}
+                    render={({ field }) => {
+                      const selected = field.value ?? []
+
+                      const toggleNode = (nodeId: string, checked: boolean) => {
+                        const next = checked
+                          ? [...selected, nodeId]
+                          : selected.filter((value) => value !== nodeId)
+                        field.onChange(next)
+                      }
+
+                      return (
+                        <SimpleGrid columns={{ base: 1, md: 2 }} gap={2}>
+                          {nodes.map((node) => (
+                            <Checkbox
+                              key={node.id}
+                              checked={selected.includes(node.id)}
+                              onCheckedChange={({ checked }) =>
+                                toggleNode(node.id, !!checked)
+                              }
+                            >
+                              {node.name}
+                            </Checkbox>
+                          ))}
+                        </SimpleGrid>
+                      )
+                    }}
+                  />
+                )}
               </Field>
             </VStack>
           </DialogBody>

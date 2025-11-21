@@ -1,6 +1,19 @@
 import uuid
+from typing import TYPE_CHECKING, List
+
+from datetime import datetime
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
+
+if TYPE_CHECKING:
+    from .item import Item
+    from .project import Project
+    from .repository import Repository
+    from .issue import Issue
+    from .node import Node
+    from .credential import Credential
+    from .prompt import Prompt
+
 
 class UserBase(SQLModel):
     email: EmailStr = Field(unique=True, index=True, max_length=255)
@@ -30,13 +43,19 @@ class UpdatePassword(SQLModel):
 
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+
     hashed_password: str
-    items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
-    issues: list["Issue"] = Relationship(back_populates="owner", cascade_delete=True)
-    credentials: list["Credential"] = Relationship(back_populates="owner", cascade_delete=True)
-    repositories: list["Repository"] = Relationship(back_populates="owner", cascade_delete=True)
-    prompts: list["Prompt"] = Relationship(back_populates="owner", cascade_delete=True)
-    projects: list["Project"] = Relationship(back_populates="owner", cascade_delete=True)
+
+    items: List["Item"] = Relationship(back_populates="owner", cascade_delete=True)
+    projects: List["Project"] = Relationship(back_populates="owner", cascade_delete=True)
+    repositories: List["Repository"] = Relationship(back_populates="owner", cascade_delete=True)
+    issues: List["Issue"] = Relationship(back_populates="owner", cascade_delete=True)
+    nodes: List["Node"] = Relationship(back_populates="owner", cascade_delete=True)
+    credentials: List["Credential"] = Relationship(back_populates="owner", cascade_delete=True)
+    prompts: List["Prompt"] = Relationship(back_populates="owner", cascade_delete=True)
+
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 class UserPublic(UserBase):
     id: uuid.UUID

@@ -22,8 +22,6 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@/components/ui/pagination.tsx"
-import { useState } from "react"
-import type { IssuePublic } from "@/client"
 
 const issuesSearchSchema = z.object({
   page: z.number().catch(1),

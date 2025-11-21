@@ -1,7 +1,10 @@
 import uuid
+from typing import TYPE_CHECKING, Optional
 from datetime import datetime
 from sqlmodel import Field, Relationship, SQLModel
-from .user import User
+
+if TYPE_CHECKING:
+    from .user import User
 
 
 class IssueBase(SQLModel):
@@ -31,10 +34,9 @@ class IssueUpdate(SQLModel):
 
 class Issue(IssueBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    owner_id: uuid.UUID = Field(
-        foreign_key="user.id", nullable=False, ondelete="CASCADE"
-    )
-    owner: User | None = Relationship(back_populates="issues")
+    owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    owner: Optional["User"] = Relationship(back_populates="issues")
+
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     started_at: datetime | None = Field(default=None)
