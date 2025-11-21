@@ -6,6 +6,7 @@ from sqlmodel import func, select
 
 from app.api.deps import CurrentUser, SessionDep
 from app.models import Project, ProjectCreate, ProjectPublic, ProjectsPublic, ProjectUpdate, Message
+from app.models import Repository
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -61,10 +62,33 @@ def create_project(
     """
     Create new project.
     """
+    # 创建项目
     project = Project.model_validate(project_in, update={"owner_id": current_user.id})
     session.add(project)
     session.commit()
     session.refresh(project)
+    
+    # 处理repository_urls，为每个URL创建Repository记录
+    if project_in.repository_urls:
+        for url in project_in.repository_urls:
+            url = url.strip()
+            if url:  # 确保URL不为空
+                # 从URL中提取仓库名称作为默认名称
+                repo_name = url.rstrip('/').split('/')[-1]
+                if repo_name.endswith('.git'):
+                    repo_name = repo_name[:-4]
+                
+                # 创建Repository记录
+                repository = Repository(
+                    name=repo_name,
+                    url=url,
+                    owner_id=current_user.id,
+                    is_public=True  # 默认为公开
+                )
+                session.add(repository)
+        
+        session.commit()
+    
     return project
 
 
@@ -90,6 +114,28 @@ def update_project(
     session.add(project)
     session.commit()
     session.refresh(project)
+    
+    # 处理repository_urls更新
+    if project_in.repository_urls is not None:
+        for url in project_in.repository_urls:
+            url = url.strip()
+            if url:  # 确保URL不为空
+                # 从URL中提取仓库名称作为默认名称
+                repo_name = url.rstrip('/').split('/')[-1]
+                if repo_name.endswith('.git'):
+                    repo_name = repo_name[:-4]
+                
+                # 创建Repository记录
+                repository = Repository(
+                    name=repo_name,
+                    url=url,
+                    owner_id=current_user.id,
+                    is_public=True  # 默认为公开
+                )
+                session.add(repository)
+        
+        session.commit()
+    
     return project
 
 
