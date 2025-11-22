@@ -65,6 +65,19 @@ export type CredentialUpdate = {
 };
 
 /**
+ * Dashboard统计数据
+ */
+export type DashboardStats = {
+    issues: IssueStats;
+    nodes: NodeStats;
+    projects_count: number;
+    prompts_count: number;
+    credentials_count: number;
+    repositories_count: number;
+    running_tasks: Array<RunningTask>;
+};
+
+/**
  * GitHub多仓库同步请求模型
  */
 export type GitHubMultiSyncRequest = {
@@ -120,6 +133,15 @@ export type IssuesPublic = {
     count: number;
 };
 
+/**
+ * Issue统计
+ */
+export type IssueStats = {
+    pending: number;
+    processing: number;
+    total: number;
+};
+
 export type IssueUpdate = {
     title?: (string | null);
     description?: (string | null);
@@ -128,28 +150,6 @@ export type IssueUpdate = {
     status?: (string | null);
     priority?: (number | null);
     assigned_node_id?: (string | null);
-};
-
-export type ItemCreate = {
-    title: string;
-    description?: (string | null);
-};
-
-export type ItemPublic = {
-    title: string;
-    description?: (string | null);
-    id: string;
-    owner_id: string;
-};
-
-export type ItemsPublic = {
-    data: Array<ItemPublic>;
-    count: number;
-};
-
-export type ItemUpdate = {
-    title?: (string | null);
-    description?: (string | null);
 };
 
 export type Message = {
@@ -201,6 +201,16 @@ export type NodeRegister = {
 export type NodesPublic = {
     data: Array<NodePublic>;
     count: number;
+};
+
+/**
+ * Node统计
+ */
+export type NodeStats = {
+    idle: number;
+    running: number;
+    offline: number;
+    total: number;
 };
 
 export type NodeUpdate = {
@@ -285,6 +295,16 @@ export type RegistrationKeyPublic = {
     docker_command: string;
 };
 
+/**
+ * 上报分支请求模型
+ */
+export type ReportBranchRequest = {
+    task_id: string;
+    branch_name: string;
+    status: string;
+    error_message?: (string | null);
+};
+
 export type RepositoriesPublic = {
     data: Array<RepositoryPublic>;
     count: number;
@@ -313,6 +333,40 @@ export type RepositoryUpdate = {
     url?: (string | null);
     description?: (string | null);
     is_public?: (boolean | null);
+};
+
+/**
+ * 运行中的任务
+ */
+export type RunningTask = {
+    task_id: string;
+    issue_id: string;
+    issue_title: string;
+    node_name: string;
+    running_time: string;
+    started_at: string;
+};
+
+/**
+ * 启动任务请求模型
+ */
+export type StartTaskRequest = {
+    command?: (string | null);
+};
+
+export type TaskPublic = {
+    issue_id: string;
+    node_id?: (string | null);
+    status?: string;
+    command?: (string | null);
+    result_branch?: (string | null);
+    error_message?: (string | null);
+    id: string;
+    owner_id: string;
+    created_at: string;
+    updated_at: string;
+    started_at?: (string | null);
+    completed_at?: (string | null);
 };
 
 export type Token = {
@@ -361,8 +415,8 @@ export type UserUpdate = {
 };
 
 export type UserUpdateMe = {
-    full_name?: (string | null);
     email?: (string | null);
+    full_name?: (string | null);
 };
 
 export type ValidationError = {
@@ -402,6 +456,8 @@ export type CredentialsDeleteCredentialData = {
 };
 
 export type CredentialsDeleteCredentialResponse = (Message);
+
+export type DashboardGetDashboardStatsResponse = (DashboardStats);
 
 export type IssuesReadIssuesData = {
     limit?: number;
@@ -469,37 +525,19 @@ export type IssuesSyncMultipleGithubReposResponse = ({
     [key: string]: unknown;
 });
 
-export type ItemsReadItemsData = {
-    limit?: number;
-    skip?: number;
-};
-
-export type ItemsReadItemsResponse = (ItemsPublic);
-
-export type ItemsCreateItemData = {
-    requestBody: ItemCreate;
-};
-
-export type ItemsCreateItemResponse = (ItemPublic);
-
-export type ItemsReadItemData = {
+export type IssuesStartIssueTaskData = {
     id: string;
+    requestBody?: (StartTaskRequest | null);
 };
 
-export type ItemsReadItemResponse = (ItemPublic);
+export type IssuesStartIssueTaskResponse = (TaskPublic);
 
-export type ItemsUpdateItemData = {
+export type IssuesReportBranchData = {
     id: string;
-    requestBody: ItemUpdate;
+    requestBody: ReportBranchRequest;
 };
 
-export type ItemsUpdateItemResponse = (ItemPublic);
-
-export type ItemsDeleteItemData = {
-    id: string;
-};
-
-export type ItemsDeleteItemResponse = (Message);
+export type IssuesReportBranchResponse = (Message);
 
 export type LoginLoginAccessTokenData = {
     formData: Body_login_login_access_token;

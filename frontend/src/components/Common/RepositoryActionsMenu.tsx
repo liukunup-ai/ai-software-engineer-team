@@ -1,16 +1,12 @@
-import {
-  Button,
-  MenuContent,
-  MenuItem,
-  MenuRoot,
-  MenuTrigger,
-} from "@chakra-ui/react"
+import { IconButton } from "@chakra-ui/react"
 import { useState } from "react"
-import { FiEdit, FiMoreHorizontal, FiTrash } from "react-icons/fi"
+import { FiEdit, FiTrash } from "react-icons/fi"
+import { BsThreeDotsVertical } from "react-icons/bs"
 
 import type { RepositoryPublic } from "@/client"
 import DeleteRepository from "@/components/Repositories/DeleteRepository"
 import EditRepository from "@/components/Repositories/EditRepository"
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu"
 
 interface RepositoryActionsMenuProps {
   repository: RepositoryPublic
@@ -24,9 +20,9 @@ export const RepositoryActionsMenu = ({ repository }: RepositoryActionsMenuProps
     <>
       <MenuRoot>
         <MenuTrigger asChild>
-          <Button variant="subtle" aria-label="Open actions menu">
-            <FiMoreHorizontal />
-          </Button>
+          <IconButton variant="ghost" color="inherit" aria-label="Open actions menu">
+            <BsThreeDotsVertical />
+          </IconButton>
         </MenuTrigger>
         <MenuContent>
           <MenuItem value="edit" onClick={() => setIsEditOpen(true)}>

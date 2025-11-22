@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { CredentialsReadCredentialsData, CredentialsReadCredentialsResponse, CredentialsCreateCredentialData, CredentialsCreateCredentialResponse, CredentialsReadCredentialData, CredentialsReadCredentialResponse, CredentialsUpdateCredentialData, CredentialsUpdateCredentialResponse, CredentialsDeleteCredentialData, CredentialsDeleteCredentialResponse, IssuesReadIssuesData, IssuesReadIssuesResponse, IssuesCreateIssueData, IssuesCreateIssueResponse, IssuesReadIssueData, IssuesReadIssueResponse, IssuesUpdateIssueData, IssuesUpdateIssueResponse, IssuesDeleteIssueData, IssuesDeleteIssueResponse, IssuesGetNextPendingIssueResponse, IssuesProcessIssueWorkflowData, IssuesProcessIssueWorkflowResponse, IssuesCommitAndPushIssueData, IssuesCommitAndPushIssueResponse, IssuesSyncGithubIssuesData, IssuesSyncGithubIssuesResponse, IssuesSyncMultipleGithubReposData, IssuesSyncMultipleGithubReposResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, NodesReadNodesData, NodesReadNodesResponse, NodesCreateNodeData, NodesCreateNodeResponse, NodesGetRegistrationKeyResponse, NodesRotateRegistrationKeyResponse, NodesRegisterNodeData, NodesRegisterNodeResponse, NodesNodeHeartbeatData, NodesNodeHeartbeatResponse, NodesReadNodeData, NodesReadNodeResponse, NodesUpdateNodeData, NodesUpdateNodeResponse, NodesDeleteNodeData, NodesDeleteNodeResponse, NodesExecuteCommandOnNodeData, NodesExecuteCommandOnNodeResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProjectsReadProjectsData, ProjectsReadProjectsResponse, ProjectsCreateProjectData, ProjectsCreateProjectResponse, ProjectsReadProjectData, ProjectsReadProjectResponse, ProjectsUpdateProjectData, ProjectsUpdateProjectResponse, ProjectsDeleteProjectData, ProjectsDeleteProjectResponse, PromptsReadPromptsData, PromptsReadPromptsResponse, PromptsCreatePromptData, PromptsCreatePromptResponse, PromptsReadPromptData, PromptsReadPromptResponse, PromptsUpdatePromptData, PromptsUpdatePromptResponse, PromptsDeletePromptData, PromptsDeletePromptResponse, RepositoriesReadRepositoriesData, RepositoriesReadRepositoriesResponse, RepositoriesCreateRepositoryData, RepositoriesCreateRepositoryResponse, RepositoriesReadRepositoryData, RepositoriesReadRepositoryResponse, RepositoriesUpdateRepositoryData, RepositoriesUpdateRepositoryResponse, RepositoriesDeleteRepositoryData, RepositoriesDeleteRepositoryResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { CredentialsReadCredentialsData, CredentialsReadCredentialsResponse, CredentialsCreateCredentialData, CredentialsCreateCredentialResponse, CredentialsReadCredentialData, CredentialsReadCredentialResponse, CredentialsUpdateCredentialData, CredentialsUpdateCredentialResponse, CredentialsDeleteCredentialData, CredentialsDeleteCredentialResponse, DashboardGetDashboardStatsResponse, IssuesReadIssuesData, IssuesReadIssuesResponse, IssuesCreateIssueData, IssuesCreateIssueResponse, IssuesReadIssueData, IssuesReadIssueResponse, IssuesUpdateIssueData, IssuesUpdateIssueResponse, IssuesDeleteIssueData, IssuesDeleteIssueResponse, IssuesGetNextPendingIssueResponse, IssuesProcessIssueWorkflowData, IssuesProcessIssueWorkflowResponse, IssuesCommitAndPushIssueData, IssuesCommitAndPushIssueResponse, IssuesSyncGithubIssuesData, IssuesSyncGithubIssuesResponse, IssuesSyncMultipleGithubReposData, IssuesSyncMultipleGithubReposResponse, IssuesStartIssueTaskData, IssuesStartIssueTaskResponse, IssuesReportBranchData, IssuesReportBranchResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, NodesReadNodesData, NodesReadNodesResponse, NodesCreateNodeData, NodesCreateNodeResponse, NodesGetRegistrationKeyResponse, NodesRotateRegistrationKeyResponse, NodesRegisterNodeData, NodesRegisterNodeResponse, NodesNodeHeartbeatData, NodesNodeHeartbeatResponse, NodesReadNodeData, NodesReadNodeResponse, NodesUpdateNodeData, NodesUpdateNodeResponse, NodesDeleteNodeData, NodesDeleteNodeResponse, NodesExecuteCommandOnNodeData, NodesExecuteCommandOnNodeResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProjectsReadProjectsData, ProjectsReadProjectsResponse, ProjectsCreateProjectData, ProjectsCreateProjectResponse, ProjectsReadProjectData, ProjectsReadProjectResponse, ProjectsUpdateProjectData, ProjectsUpdateProjectResponse, ProjectsDeleteProjectData, ProjectsDeleteProjectResponse, PromptsReadPromptsData, PromptsReadPromptsResponse, PromptsCreatePromptData, PromptsCreatePromptResponse, PromptsReadPromptData, PromptsReadPromptResponse, PromptsUpdatePromptData, PromptsUpdatePromptResponse, PromptsDeletePromptData, PromptsDeletePromptResponse, RepositoriesReadRepositoriesData, RepositoriesReadRepositoriesResponse, RepositoriesCreateRepositoryData, RepositoriesCreateRepositoryResponse, RepositoriesReadRepositoryData, RepositoriesReadRepositoryResponse, RepositoriesUpdateRepositoryData, RepositoriesUpdateRepositoryResponse, RepositoriesDeleteRepositoryData, RepositoriesDeleteRepositoryResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class CredentialsService {
     /**
@@ -112,6 +112,23 @@ export class CredentialsService {
             errors: {
                 422: 'Validation Error'
             }
+        });
+    }
+}
+
+export class DashboardService {
+    /**
+     * Get Dashboard Stats
+     * 获取Dashboard统计数据
+     * - 普通用户:只统计自己的数据
+     * - 超级管理员:统计所有用户的数据
+     * @returns DashboardStats Successful Response
+     * @throws ApiError
+     */
+    public static getDashboardStats(): CancelablePromise<DashboardGetDashboardStatsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/dashboard/stats'
         });
     }
 }
@@ -328,44 +345,28 @@ export class IssuesService {
             }
         });
     }
-}
-
-export class ItemsService {
-    /**
-     * Read Items
-     * Retrieve items.
-     * @param data The data for the request.
-     * @param data.skip
-     * @param data.limit
-     * @returns ItemsPublic Successful Response
-     * @throws ApiError
-     */
-    public static readItems(data: ItemsReadItemsData = {}): CancelablePromise<ItemsReadItemsResponse> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/v1/items/',
-            query: {
-                skip: data.skip,
-                limit: data.limit
-            },
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
     
     /**
-     * Create Item
-     * Create new item.
+     * Start Issue Task
+     * 启动Issue自动化处理任务
+     * 1. 查询issue和关联的仓库
+     * 2. 自动选择空闲的node
+     * 3. 查询node可用凭证
+     * 4. 创建任务记录
+     * 5. 下发任务给node处理
      * @param data The data for the request.
+     * @param data.id
      * @param data.requestBody
-     * @returns ItemPublic Successful Response
+     * @returns TaskPublic Successful Response
      * @throws ApiError
      */
-    public static createItem(data: ItemsCreateItemData): CancelablePromise<ItemsCreateItemResponse> {
+    public static startIssueTask(data: IssuesStartIssueTaskData): CancelablePromise<IssuesStartIssueTaskResponse> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/items/',
+            url: '/api/v1/issues/{id}/start',
+            path: {
+                id: data.id
+            },
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {
@@ -375,65 +376,26 @@ export class ItemsService {
     }
     
     /**
-     * Read Item
-     * Get item by ID.
-     * @param data The data for the request.
-     * @param data.id
-     * @returns ItemPublic Successful Response
-     * @throws ApiError
-     */
-    public static readItem(data: ItemsReadItemData): CancelablePromise<ItemsReadItemResponse> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/v1/items/{id}',
-            path: {
-                id: data.id
-            },
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
-    
-    /**
-     * Update Item
-     * Update an item.
+     * Report Branch
+     * Node上报处理完成的分支名
+     * 1. 更新task状态
+     * 2. 更新issue状态为待合入
+     * 3. 记录分支名
      * @param data The data for the request.
      * @param data.id
      * @param data.requestBody
-     * @returns ItemPublic Successful Response
-     * @throws ApiError
-     */
-    public static updateItem(data: ItemsUpdateItemData): CancelablePromise<ItemsUpdateItemResponse> {
-        return __request(OpenAPI, {
-            method: 'PUT',
-            url: '/api/v1/items/{id}',
-            path: {
-                id: data.id
-            },
-            body: data.requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
-    
-    /**
-     * Delete Item
-     * Delete an item.
-     * @param data The data for the request.
-     * @param data.id
      * @returns Message Successful Response
      * @throws ApiError
      */
-    public static deleteItem(data: ItemsDeleteItemData): CancelablePromise<ItemsDeleteItemResponse> {
+    public static reportBranch(data: IssuesReportBranchData): CancelablePromise<IssuesReportBranchResponse> {
         return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/api/v1/items/{id}',
+            method: 'POST',
+            url: '/api/v1/issues/{id}/report-branch',
             path: {
                 id: data.id
             },
+            body: data.requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: 'Validation Error'
             }

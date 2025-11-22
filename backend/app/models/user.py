@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from .node import Node
     from .credential import Credential
     from .prompt import Prompt
+    from .task import Task
 
 
 class UserRegister(SQLModel):
@@ -57,6 +58,7 @@ class User(UserBase, table=True):
     nodes: List["Node"] = Relationship(back_populates="owner", cascade_delete=True)
     credentials: List["Credential"] = Relationship(back_populates="owner", cascade_delete=True)
     prompts: List["Prompt"] = Relationship(back_populates="owner", cascade_delete=True)
+    tasks: List["Task"] = Relationship(back_populates="owner", cascade_delete=True)
 
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)

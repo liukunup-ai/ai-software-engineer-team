@@ -56,7 +56,7 @@ const AddProject = () => {
     },
   })
 
-  const MAX_REPOSITORIES = 5
+  const MAX_REPOSITORIES = 3
 
   const addRepository = () => {
     if (repositories.length < MAX_REPOSITORIES) {
@@ -150,8 +150,8 @@ const AddProject = () => {
                 />
               </Field>
 
-              <Field label="Repositories (Optional)">
-                <VStack gap={2} align="stretch">
+              <Field label="Repositories">
+                <VStack gap={2} align="stretch" width="100%">
                   {repositories.map((repo, index) => (
                     <HStack key={index} gap={2}>
                       <Input

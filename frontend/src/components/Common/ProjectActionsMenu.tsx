@@ -1,16 +1,12 @@
-import {
-  Button,
-  MenuContent,
-  MenuItem,
-  MenuRoot,
-  MenuTrigger,
-} from "@chakra-ui/react"
+import { IconButton } from "@chakra-ui/react"
 import { useState } from "react"
-import { FiEdit, FiMoreHorizontal, FiTrash } from "react-icons/fi"
+import { FiEdit, FiTrash } from "react-icons/fi"
+import { BsThreeDotsVertical } from "react-icons/bs"
 
 import type { ProjectPublic } from "@/client"
 import DeleteProject from "@/components/Projects/DeleteProject"
 import EditProject from "@/components/Projects/EditProject"
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu"
 
 interface ProjectActionsMenuProps {
   project: ProjectPublic
@@ -24,9 +20,9 @@ export const ProjectActionsMenu = ({ project }: ProjectActionsMenuProps) => {
     <>
       <MenuRoot>
         <MenuTrigger asChild>
-          <Button variant="subtle" aria-label="Open actions menu">
-            <FiMoreHorizontal />
-          </Button>
+          <IconButton variant="ghost" color="inherit" aria-label="Open actions menu">
+            <BsThreeDotsVertical />
+          </IconButton>
         </MenuTrigger>
         <MenuContent>
           <MenuItem value="edit" onClick={() => setIsEditOpen(true)}>

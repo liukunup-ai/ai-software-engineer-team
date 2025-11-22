@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { FaKey, FaCopy, FaCheck } from "react-icons/fa"
 
-import { NodesService } from "@/client/nodes.service"
+import { NodesService } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"

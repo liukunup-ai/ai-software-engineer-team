@@ -298,6 +298,44 @@ export const CredentialsPublicSchema = {
     title: 'CredentialsPublic'
 } as const;
 
+export const DashboardStatsSchema = {
+    properties: {
+        issues: {
+            '$ref': '#/components/schemas/IssueStats'
+        },
+        nodes: {
+            '$ref': '#/components/schemas/NodeStats'
+        },
+        projects_count: {
+            type: 'integer',
+            title: 'Projects Count'
+        },
+        prompts_count: {
+            type: 'integer',
+            title: 'Prompts Count'
+        },
+        credentials_count: {
+            type: 'integer',
+            title: 'Credentials Count'
+        },
+        repositories_count: {
+            type: 'integer',
+            title: 'Repositories Count'
+        },
+        running_tasks: {
+            items: {
+                '$ref': '#/components/schemas/RunningTask'
+            },
+            type: 'array',
+            title: 'Running Tasks'
+        }
+    },
+    type: 'object',
+    required: ['issues', 'nodes', 'projects_count', 'prompts_count', 'credentials_count', 'repositories_count', 'running_tasks'],
+    title: 'DashboardStats',
+    description: 'Dashboard统计数据'
+} as const;
+
 export const GitHubMultiSyncRequestSchema = {
     properties: {
         repos: {
@@ -580,6 +618,27 @@ export const IssuePublicSchema = {
     title: 'IssuePublic'
 } as const;
 
+export const IssueStatsSchema = {
+    properties: {
+        pending: {
+            type: 'integer',
+            title: 'Pending'
+        },
+        processing: {
+            type: 'integer',
+            title: 'Processing'
+        },
+        total: {
+            type: 'integer',
+            title: 'Total'
+        }
+    },
+    type: 'object',
+    required: ['pending', 'processing', 'total'],
+    title: 'IssueStats',
+    description: 'Issue统计'
+} as const;
+
 export const IssueUpdateSchema = {
     properties: {
         title: {
@@ -687,119 +746,6 @@ export const IssuesPublicSchema = {
     type: 'object',
     required: ['data', 'count'],
     title: 'IssuesPublic'
-} as const;
-
-export const ItemCreateSchema = {
-    properties: {
-        title: {
-            type: 'string',
-            maxLength: 255,
-            minLength: 1,
-            title: 'Title'
-        },
-        description: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Description'
-        }
-    },
-    type: 'object',
-    required: ['title'],
-    title: 'ItemCreate'
-} as const;
-
-export const ItemPublicSchema = {
-    properties: {
-        title: {
-            type: 'string',
-            maxLength: 255,
-            minLength: 1,
-            title: 'Title'
-        },
-        description: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Description'
-        },
-        id: {
-            type: 'string',
-            format: 'uuid',
-            title: 'Id'
-        },
-        owner_id: {
-            type: 'string',
-            format: 'uuid',
-            title: 'Owner Id'
-        }
-    },
-    type: 'object',
-    required: ['title', 'id', 'owner_id'],
-    title: 'ItemPublic'
-} as const;
-
-export const ItemUpdateSchema = {
-    properties: {
-        title: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255,
-                    minLength: 1
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Title'
-        },
-        description: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Description'
-        }
-    },
-    type: 'object',
-    title: 'ItemUpdate'
-} as const;
-
-export const ItemsPublicSchema = {
-    properties: {
-        data: {
-            items: {
-                '$ref': '#/components/schemas/ItemPublic'
-            },
-            type: 'array',
-            title: 'Data'
-        },
-        count: {
-            type: 'integer',
-            title: 'Count'
-        }
-    },
-    type: 'object',
-    required: ['data', 'count'],
-    title: 'ItemsPublic'
 } as const;
 
 export const MessageSchema = {
@@ -1022,6 +968,31 @@ export const NodeRegisterSchema = {
     required: ['name', 'host', 'register_key'],
     title: 'NodeRegister',
     description: '从节点注册请求'
+} as const;
+
+export const NodeStatsSchema = {
+    properties: {
+        idle: {
+            type: 'integer',
+            title: 'Idle'
+        },
+        running: {
+            type: 'integer',
+            title: 'Running'
+        },
+        offline: {
+            type: 'integer',
+            title: 'Offline'
+        },
+        total: {
+            type: 'integer',
+            title: 'Total'
+        }
+    },
+    type: 'object',
+    required: ['idle', 'running', 'offline', 'total'],
+    title: 'NodeStats',
+    description: 'Node统计'
 } as const;
 
 export const NodeUpdateSchema = {
@@ -1505,6 +1476,39 @@ export const RegistrationKeyPublicSchema = {
     description: '注册密钥响应'
 } as const;
 
+export const ReportBranchRequestSchema = {
+    properties: {
+        task_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Task Id'
+        },
+        branch_name: {
+            type: 'string',
+            title: 'Branch Name'
+        },
+        status: {
+            type: 'string',
+            title: 'Status'
+        },
+        error_message: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Error Message'
+        }
+    },
+    type: 'object',
+    required: ['task_id', 'branch_name', 'status'],
+    title: 'ReportBranchRequest',
+    description: '上报分支请求模型'
+} as const;
+
 export const RepositoriesPublicSchema = {
     properties: {
         data: {
@@ -1534,7 +1538,7 @@ export const RepositoryCreateSchema = {
         },
         url: {
             type: 'string',
-            maxLength: 500,
+            maxLength: 1023,
             title: 'Url'
         },
         description: {
@@ -1570,7 +1574,7 @@ export const RepositoryPublicSchema = {
         },
         url: {
             type: 'string',
-            maxLength: 500,
+            maxLength: 1023,
             title: 'Url'
         },
         description: {
@@ -1669,6 +1673,172 @@ export const RepositoryUpdateSchema = {
     },
     type: 'object',
     title: 'RepositoryUpdate'
+} as const;
+
+export const RunningTaskSchema = {
+    properties: {
+        task_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Task Id'
+        },
+        issue_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Issue Id'
+        },
+        issue_title: {
+            type: 'string',
+            title: 'Issue Title'
+        },
+        node_name: {
+            type: 'string',
+            title: 'Node Name'
+        },
+        running_time: {
+            type: 'string',
+            title: 'Running Time'
+        },
+        started_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Started At'
+        }
+    },
+    type: 'object',
+    required: ['task_id', 'issue_id', 'issue_title', 'node_name', 'running_time', 'started_at'],
+    title: 'RunningTask',
+    description: '运行中的任务'
+} as const;
+
+export const StartTaskRequestSchema = {
+    properties: {
+        command: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Command'
+        }
+    },
+    type: 'object',
+    title: 'StartTaskRequest',
+    description: '启动任务请求模型'
+} as const;
+
+export const TaskPublicSchema = {
+    properties: {
+        issue_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Issue Id'
+        },
+        node_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Node Id'
+        },
+        status: {
+            type: 'string',
+            maxLength: 32,
+            title: 'Status',
+            default: 'pending'
+        },
+        command: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 512
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Command'
+        },
+        result_branch: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Result Branch'
+        },
+        error_message: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2048
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Error Message'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        owner_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Owner Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        },
+        started_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Started At'
+        },
+        completed_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Completed At'
+        }
+    },
+    type: 'object',
+    required: ['issue_id', 'id', 'owner_id', 'created_at', 'updated_at'],
+    title: 'TaskPublic'
 } as const;
 
 export const TokenSchema = {
@@ -1880,18 +2050,6 @@ export const UserUpdateSchema = {
 
 export const UserUpdateMeSchema = {
     properties: {
-        full_name: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Full Name'
-        },
         email: {
             anyOf: [
                 {
@@ -1904,6 +2062,18 @@ export const UserUpdateMeSchema = {
                 }
             ],
             title: 'Email'
+        },
+        full_name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Full Name'
         }
     },
     type: 'object',

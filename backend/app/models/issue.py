@@ -13,7 +13,7 @@ class IssueBase(SQLModel):
     description: str | None = Field(default=None, max_length=2048)
     repository_url: str | None = Field(default=None, max_length=512)
     issue_number: int | None = Field(default=None)
-    status: str = Field(default="pending", max_length=32)  # pending/processing/completed/failed
+    status: str = Field(default="pending", max_length=32)  # pending/processing/pending_merge/merged/terminated
     priority: int = Field(default=0)  # 优先级，数字越大越优先
     assigned_node_id: uuid.UUID | None = Field(default=None)  # 分配给哪个节点
 

@@ -14,6 +14,7 @@ import { z } from "zod"
 
 import { IssuesService } from "@/client"
 import AddIssue from "@/components/Issues/AddIssue"
+import StartIssueButton from "@/components/Issues/StartIssueButton"
 import { IssueActionsMenu } from "@/components/Common/IssueActionsMenu"
 import PendingItems from "@/components/Pending/PendingItems"
 import {
@@ -46,10 +47,22 @@ function getStatusColor(status: string) {
   const colors: Record<string, string> = {
     pending: "gray",
     processing: "blue",
-    completed: "green",
-    failed: "red",
+    pending_merge: "yellow",
+    merged: "green",
+    terminated: "red",
   }
   return colors[status] || "gray"
+}
+
+function getStatusLabel(status: string) {
+  const labels: Record<string, string> = {
+    pending: "待处理",
+    processing: "处理中",
+    pending_merge: "待合入",
+    merged: "已合入",
+    terminated: "已终止",
+  }
+  return labels[status] || status
 }
 
 function IssuesTable() {
@@ -103,6 +116,7 @@ function IssuesTable() {
             <Table.ColumnHeader w="xs">Status</Table.ColumnHeader>
             <Table.ColumnHeader w="xs">Priority</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Repository</Table.ColumnHeader>
+            <Table.ColumnHeader w="xs">Start</Table.ColumnHeader>
             <Table.ColumnHeader w="xs">Actions</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
@@ -117,7 +131,7 @@ function IssuesTable() {
               </Table.Cell>
               <Table.Cell>
                 <Badge colorScheme={getStatusColor(issue.status || "pending")}>
-                  {issue.status || "pending"}
+                  {getStatusLabel(issue.status || "pending")}
                 </Badge>
               </Table.Cell>
               <Table.Cell>
@@ -125,6 +139,9 @@ function IssuesTable() {
               </Table.Cell>
               <Table.Cell truncate maxW="sm">
                 {issue.repository_url || "N/A"}
+              </Table.Cell>
+              <Table.Cell>
+                <StartIssueButton issue={issue} />
               </Table.Cell>
               <Table.Cell>
                 <IssueActionsMenu issue={issue} />

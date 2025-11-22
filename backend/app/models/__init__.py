@@ -9,6 +9,7 @@ from app.models.issue import *
 from app.models.node import *
 from app.models.credential import *
 from app.models.prompt import *
+from app.models.task import *
 
 from app.models.common import *
 from app.models.registration_key import *
