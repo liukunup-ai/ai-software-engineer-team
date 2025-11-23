@@ -8,8 +8,8 @@ from sqlmodel import select, func
 from app.api.deps import CurrentUser, SessionDep
 from app.models import Node, NodeCreate, NodePublic, NodesPublic, NodeUpdate, Message
 from app.models.node import NodeRegister, NodeHeartbeat, RegistrationKeyPublic
-from app.models.registration_key import NodeRegistrationKey
-from app.models.command import CommandRequest, CommandResult
+from app.models.register_key import RegisterKey
+from app.models.command import CommandRequest, CommandResponse
 from app.core.config import settings
 
 router = APIRouter(prefix="/nodes", tags=["nodes"])
@@ -47,7 +47,7 @@ def get_registration_key(session: SessionDep, current_user: CurrentUser) -> Any:
     backend_url = settings.FRONTEND_HOST.replace("5173", "8000")  # 简单替换端口，假设后端为 8000
     docker_command = f"""docker run -d \\
   -e REGISTER_URL="{backend_url}" \\
-  -e REGISTER_KEY="{settings.NODE_REGISTRATION_KEY}" \\
+  -e REGISTER_KEY="{settings.REGISTER_KEY}" \\
   -e NODE_NAME="aise-worker-node" \\
   -e NODE_HOST="$(hostname -I | awk '{{print $1}}')" \\
   -e NODE_PORT="8007" \\
@@ -57,17 +57,17 @@ def get_registration_key(session: SessionDep, current_user: CurrentUser) -> Any:
   liukunup/ai-software-engineer:latest"""
 
     # 从数据库读取持久化注册密钥
-    db_key_obj = session.get(NodeRegistrationKey, 1)
+    db_key_obj = session.get(RegisterKey, 1)
     if not db_key_obj:
         # 自动初始化，避免 500 错误
-        db_key_obj = NodeRegistrationKey(key=settings.NODE_REGISTRATION_KEY)
+        db_key_obj = RegisterKey(key=settings.REGISTER_KEY)
         session.add(db_key_obj)
         session.commit()
         session.refresh(db_key_obj)
 
     return RegistrationKeyPublic(
         registration_key=db_key_obj.key,
-        docker_command=docker_command.replace(settings.NODE_REGISTRATION_KEY, db_key_obj.key),
+        docker_command=docker_command.replace(settings.REGISTER_KEY, db_key_obj.key),
     )
 
 @router.post("/registration-key/rotate", response_model=RegistrationKeyPublic)
@@ -75,7 +75,7 @@ def rotate_registration_key(session: SessionDep, current_user: CurrentUser) -> A
     """旋转节点注册密钥 (超级管理员). 返回新密钥与新 Docker 示例命令。"""
     if not current_user.is_superuser:
         raise HTTPException(status_code=403, detail="Not enough permissions")
-    db_key_obj = session.get(NodeRegistrationKey, 1)
+    db_key_obj = session.get(RegisterKey, 1)
     if not db_key_obj:
         raise HTTPException(status_code=500, detail="Registration key not initialized")
     old_key = db_key_obj.key
@@ -100,7 +100,7 @@ def rotate_registration_key(session: SessionDep, current_user: CurrentUser) -> A
 def register_node(session: SessionDep, node_in: NodeRegister) -> Any:
     """从节点自动注册接口 (无需认证, 通过 register_key 验证)."""
     # 验证注册密钥字段名: register_key
-    db_key_obj = session.get(NodeRegistrationKey, 1)
+    db_key_obj = session.get(RegisterKey, 1)
     if not db_key_obj:
         # 若未初始化则拒绝并引导管理员先获取密钥
         raise HTTPException(status_code=503, detail="Registration key not ready; please fetch /nodes/registration-key first")
@@ -142,7 +142,7 @@ def register_node(session: SessionDep, node_in: NodeRegister) -> Any:
 @router.post("/heartbeat")
 def node_heartbeat(session: SessionDep, heartbeat: NodeHeartbeat) -> Message:
     """从节点心跳接口 (无需认证, 通过 register_key 验证)."""
-    db_key_obj = session.get(NodeRegistrationKey, 1)
+    db_key_obj = session.get(RegisterKey, 1)
     if not db_key_obj:
         raise HTTPException(status_code=503, detail="Registration key not ready; please fetch /nodes/registration-key first")
     if heartbeat.register_key != db_key_obj.key:
@@ -199,7 +199,7 @@ def delete_node(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -
     return Message(message="Node deleted successfully")
 
 
-@router.post("/{id}/execute", response_model=CommandResult)
+@router.post("/{id}/execute", response_model=CommandResponse)
 async def execute_command_on_node(
     session: SessionDep, 
     current_user: CurrentUser, 
@@ -227,7 +227,7 @@ async def execute_command_on_node(
                 json=command_req.model_dump()
             )
             response.raise_for_status()
-            return CommandResult(**response.json())
+            return CommandResponse(**response.json())
     except httpx.HTTPError as e:
         raise HTTPException(status_code=500, detail=f"Failed to execute command on node: {str(e)}")
 

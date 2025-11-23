@@ -36,6 +36,7 @@ class Task(TaskBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
     owner: Optional["User"] = Relationship(back_populates="tasks")
+    issue: Optional["Issue"] = Relationship(back_populates="tasks")
 
     started_at: datetime | None = Field(default=None)
     completed_at: datetime | None = Field(default=None)

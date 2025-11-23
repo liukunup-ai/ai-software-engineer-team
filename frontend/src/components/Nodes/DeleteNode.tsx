@@ -1,11 +1,20 @@
 import { Button, DialogTitle, Text } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useMemo, useState, type ReactNode } from "react"
+import { type ReactNode, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { FiTrash2 } from "react-icons/fi"
 
 import { NodesService } from "@/client"
-import { DialogActionTrigger, DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogRoot, DialogTrigger } from "@/components/ui/dialog"
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import useCustomToast from "@/hooks/useCustomToast"
 
 interface DeleteNodeProps {
@@ -15,7 +24,12 @@ interface DeleteNodeProps {
   onClose?: () => void
 }
 
-const DeleteNode = ({ id, trigger, isOpen: controlledOpen, onClose }: DeleteNodeProps) => {
+const DeleteNode = ({
+  id,
+  trigger,
+  isOpen: controlledOpen,
+  onClose,
+}: DeleteNodeProps) => {
   const [internalOpen, setInternalOpen] = useState(false)
   const isControlled = controlledOpen !== undefined
   const isOpen = isControlled ? controlledOpen : internalOpen
@@ -28,7 +42,10 @@ const DeleteNode = ({ id, trigger, isOpen: controlledOpen, onClose }: DeleteNode
   }
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
-  const { handleSubmit, formState: { isSubmitting } } = useForm()
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm()
 
   const deleteNode = async (id: string) => {
     await NodesService.deleteNode({ id })
@@ -36,12 +53,21 @@ const DeleteNode = ({ id, trigger, isOpen: controlledOpen, onClose }: DeleteNode
 
   const mutation = useMutation({
     mutationFn: deleteNode,
-    onSuccess: () => { showSuccessToast("节点删除成功"); closeDialog() },
-    onError: () => { showErrorToast("删除节点失败") },
-    onSettled: () => { queryClient.invalidateQueries({ queryKey: ["nodes"] }) }
+    onSuccess: () => {
+      showSuccessToast("节点删除成功")
+      closeDialog()
+    },
+    onError: () => {
+      showErrorToast("删除节点失败")
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["nodes"] })
+    },
   })
 
-  const onSubmit = async () => { mutation.mutate(id) }
+  const onSubmit = async () => {
+    mutation.mutate(id)
+  }
 
   const handleOpenChange = ({ open }: { open: boolean }) => {
     if (isControlled) {
@@ -65,12 +91,14 @@ const DeleteNode = ({ id, trigger, isOpen: controlledOpen, onClose }: DeleteNode
   }, [isControlled, trigger])
 
   return (
-    <DialogRoot size={{ base: "xs", md: "md" }} placement="center" role="alertdialog" open={isOpen} onOpenChange={handleOpenChange}>
-      {triggerNode && (
-        <DialogTrigger asChild>
-          {triggerNode}
-        </DialogTrigger>
-      )}
+    <DialogRoot
+      size={{ base: "xs", md: "md" }}
+      placement="center"
+      role="alertdialog"
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+    >
+      {triggerNode && <DialogTrigger asChild>{triggerNode}</DialogTrigger>}
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogCloseTrigger />
@@ -82,9 +110,22 @@ const DeleteNode = ({ id, trigger, isOpen: controlledOpen, onClose }: DeleteNode
           </DialogBody>
           <DialogFooter gap={2}>
             <DialogActionTrigger asChild>
-              <Button variant="subtle" colorPalette="gray" disabled={isSubmitting}>Cancel</Button>
+              <Button
+                variant="subtle"
+                colorPalette="gray"
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
             </DialogActionTrigger>
-            <Button variant="solid" colorPalette="red" type="submit" loading={isSubmitting}>Delete</Button>
+            <Button
+              variant="solid"
+              colorPalette="red"
+              type="submit"
+              loading={isSubmitting}
+            >
+              Delete
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

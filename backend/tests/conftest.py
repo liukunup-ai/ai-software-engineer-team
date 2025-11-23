@@ -7,7 +7,14 @@ from sqlmodel import Session, delete
 from app.core.config import settings
 from app.core.db import engine, init_db
 from app.main import app
-from app.models import User, Item, Node
+# Item model was removed from the application, but older tests still import it.
+# Allow the import to fail gracefully so we can keep using the shared cleanup logic.
+from app.models import Node, User
+
+try:  # pragma: no cover - defensive import for backward compatibility
+    from app.models import Item  # type: ignore
+except ImportError:  # pragma: no cover
+    Item = None  # type: ignore[assignment]
 from tests.utils.user import authentication_token_from_email
 from tests.utils.utils import get_superuser_token_headers
 
@@ -19,8 +26,9 @@ def db() -> Generator[Session, None, None]:
         yield session
         statement = delete(Node)
         session.execute(statement)
-        statement = delete(Item)
-        session.execute(statement)
+        if Item is not None:
+            statement = delete(Item)
+            session.execute(statement)
         statement = delete(User)
         session.execute(statement)
         session.commit()

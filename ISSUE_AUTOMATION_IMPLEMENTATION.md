@@ -1,4 +1,5 @@
 # Issue自动化处理功能实现总结
+<!-- markdownlint-disable MD022 MD031 MD032 MD040 -->
 
 ## 功能概述
 
@@ -139,7 +140,7 @@ Node端需要实现以下API端点:
   "repository_url": "https://github.com/owner/repo",
   "issue_number": 123,
   "issue_title": "Issue标题",
-  "issue_description": "Issue描述",
+  "issue_content": "Issue描述",
   "credential_token": "ghp_xxx",
   "command": "process issue #123"
 }

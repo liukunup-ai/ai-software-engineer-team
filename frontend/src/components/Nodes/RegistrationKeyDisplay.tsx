@@ -1,13 +1,30 @@
-import { Box, Button, Code, Heading, HStack, IconButton, Stack, Text } from "@chakra-ui/react"
+import {
+  Box,
+  Button,
+  Code,
+  Heading,
+  HStack,
+  IconButton,
+  Stack,
+  Text,
+} from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
-import { FaKey, FaCopy, FaCheck } from "react-icons/fa"
+import { FaCheck, FaCopy, FaKey } from "react-icons/fa"
 
 import { NodesService } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
-import { DialogBody, DialogCloseTrigger, DialogContent, DialogHeader, DialogRoot, DialogTitle, DialogTrigger } from "../ui/dialog"
+import {
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog"
 
 const RegistrationKeyDisplay = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -25,10 +42,10 @@ const RegistrationKeyDisplay = () => {
     handleError(error as ApiError)
   }
 
-  const copyToClipboard = async (text: string, type: 'key' | 'command') => {
+  const copyToClipboard = async (text: string, type: "key" | "command") => {
     try {
       await navigator.clipboard.writeText(text)
-      if (type === 'key') {
+      if (type === "key") {
         setCopiedKey(true)
         setTimeout(() => setCopiedKey(false), 2000)
       } else {
@@ -37,12 +54,17 @@ const RegistrationKeyDisplay = () => {
       }
       showSuccessToast("已复制到剪贴板")
     } catch (err) {
-      console.error('复制失败:', err)
+      console.error("复制失败:", err)
     }
   }
 
   return (
-    <DialogRoot size={{ base: "sm", md: "xl" }} placement="center" open={isOpen} onOpenChange={({ open }) => setIsOpen(open)}>
+    <DialogRoot
+      size={{ base: "sm", md: "xl" }}
+      placement="center"
+      open={isOpen}
+      onOpenChange={({ open }) => setIsOpen(open)}
+    >
       <DialogTrigger asChild>
         <Button variant="outline" colorPalette="blue">
           <FaKey fontSize="16px" />
@@ -59,20 +81,24 @@ const RegistrationKeyDisplay = () => {
           ) : data ? (
             <Stack gap={4}>
               <Box>
-                <Heading size="sm" mb={2}>注册密钥</Heading>
+                <Heading size="sm" mb={2}>
+                  注册密钥
+                </Heading>
                 <HStack>
-                  <Code 
-                    flex={1} 
-                    p={2} 
-                    borderRadius="md" 
+                  <Code
+                    flex={1}
+                    p={2}
+                    borderRadius="md"
                     fontSize="sm"
                     wordBreak="break-all"
                   >
                     {data.registration_key}
                   </Code>
-                  <IconButton 
+                  <IconButton
                     aria-label="复制密钥"
-                    onClick={() => copyToClipboard(data.registration_key, 'key')}
+                    onClick={() =>
+                      copyToClipboard(data.registration_key, "key")
+                    }
                     colorPalette={copiedKey ? "green" : "gray"}
                   >
                     {copiedKey ? <FaCheck /> : <FaCopy />}
@@ -81,12 +107,14 @@ const RegistrationKeyDisplay = () => {
               </Box>
 
               <Box>
-                <Heading size="sm" mb={2}>Docker 部署命令</Heading>
+                <Heading size="sm" mb={2}>
+                  Docker 部署命令
+                </Heading>
                 <Text fontSize="sm" color="gray.600" mb={2}>
                   在从节点服务器上运行以下命令来注册节点：
                 </Text>
                 <Box position="relative">
-                  <Code 
+                  <Code
                     display="block"
                     p={3}
                     borderRadius="md"
@@ -102,7 +130,9 @@ const RegistrationKeyDisplay = () => {
                     top={2}
                     right={2}
                     size="sm"
-                    onClick={() => copyToClipboard(data.docker_command, 'command')}
+                    onClick={() =>
+                      copyToClipboard(data.docker_command, "command")
+                    }
                     colorPalette={copiedCommand ? "green" : "gray"}
                   >
                     {copiedCommand ? <FaCheck /> : <FaCopy />}
@@ -112,7 +142,8 @@ const RegistrationKeyDisplay = () => {
 
               <Box bg="blue.50" p={3} borderRadius="md">
                 <Text fontSize="sm" color="blue.800">
-                  <strong>说明：</strong>从节点在启动时会自动注册到主节点，并定期发送心跳信息更新状态。
+                  <strong>说明：</strong>
+                  从节点在启动时会自动注册到主节点，并定期发送心跳信息更新状态。
                   请确保从节点可以访问主节点的网络地址。
                 </Text>
               </Box>

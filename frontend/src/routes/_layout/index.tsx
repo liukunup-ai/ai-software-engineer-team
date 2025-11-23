@@ -1,22 +1,21 @@
 import {
+  Badge,
   Box,
-  Container,
-  Text,
-  SimpleGrid,
   Card,
+  Center,
+  Container,
   Flex,
   Heading,
-  Table,
-  Badge,
+  SimpleGrid,
   Spinner,
-  Center,
+  Table,
+  Text,
 } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { FiCheckCircle, FiClock, FiDatabase, FiServer } from "react-icons/fi"
-
-import { DashboardService } from "@/client"
 import type { DashboardStats } from "@/client"
+import { DashboardService } from "@/client"
 import useAuth from "@/hooks/useAuth"
 
 export const Route = createFileRoute("/_layout/")({
@@ -107,7 +106,6 @@ function Dashboard() {
             icon={<FiServer />}
             colorScheme="green"
           />
-
         </SimpleGrid>
 
         <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={6} mb={8}>
@@ -201,4 +199,3 @@ function Dashboard() {
     </Container>
   )
 }
-

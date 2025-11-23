@@ -11,10 +11,11 @@ import { useState } from "react"
 import { Controller, type SubmitHandler, useForm } from "react-hook-form"
 import { FaPlus } from "react-icons/fa"
 
-import { type RepositoryCreate, RepositoriesService } from "@/client"
+import { RepositoriesService, type RepositoryCreate } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
+import { Checkbox } from "../ui/checkbox"
 import {
   DialogBody,
   DialogCloseTrigger,
@@ -24,7 +25,6 @@ import {
   DialogRoot,
   DialogTrigger,
 } from "../ui/dialog"
-import { Checkbox } from "../ui/checkbox"
 import { Field } from "../ui/field"
 
 const AddRepository = () => {

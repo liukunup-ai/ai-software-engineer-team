@@ -473,6 +473,26 @@ export const IssueCreateSchema = {
                 }
             ],
             title: 'Assigned Node Id'
+        },
+        project_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Project Id'
+        },
+        dependency_issue_ids: {
+            items: {
+                type: 'string',
+                format: 'uuid'
+            },
+            type: 'array',
+            title: 'Dependency Issue Ids'
         }
     },
     type: 'object',
@@ -546,6 +566,18 @@ export const IssuePublicSchema = {
             ],
             title: 'Assigned Node Id'
         },
+        project_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Project Id'
+        },
         id: {
             type: 'string',
             format: 'uuid',
@@ -611,6 +643,14 @@ export const IssuePublicSchema = {
                 }
             ],
             title: 'Result Branch'
+        },
+        dependency_issue_ids: {
+            items: {
+                type: 'string',
+                format: 'uuid'
+            },
+            type: 'array',
+            title: 'Dependency Issue Ids'
         }
     },
     type: 'object',
@@ -723,6 +763,33 @@ export const IssueUpdateSchema = {
                 }
             ],
             title: 'Assigned Node Id'
+        },
+        project_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Project Id'
+        },
+        dependency_issue_ids: {
+            anyOf: [
+                {
+                    items: {
+                        type: 'string',
+                        format: 'uuid'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Dependency Issue Ids'
         }
     },
     type: 'object',

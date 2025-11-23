@@ -6,8 +6,8 @@ import {
   HStack,
   Icon,
   Input,
-  MenuPositioner,
   MenuContent,
+  MenuPositioner,
   MenuRoot,
   MenuTrigger,
   Portal,
@@ -50,9 +50,11 @@ const ProjectSelector = () => {
       return projects
     }
 
-    return projects.filter(project => {
+    return projects.filter((project) => {
       const nameMatch = project.name.toLowerCase().includes(normalizedSearch)
-      const descriptionMatch = project.description?.toLowerCase().includes(normalizedSearch)
+      const descriptionMatch = project.description
+        ?.toLowerCase()
+        .includes(normalizedSearch)
       return nameMatch || descriptionMatch
     })
   }, [projects, searchValue])
@@ -72,8 +74,10 @@ const ProjectSelector = () => {
 
   const menuLabel = isError
     ? "Projects unavailable"
-    : selectedProject?.name ?? (isLoading ? "Loading projects..." : "Select Project")
-  const errorMessage = error instanceof Error ? error.message : "Something went wrong"
+    : (selectedProject?.name ??
+      (isLoading ? "Loading projects..." : "Select Project"))
+  const errorMessage =
+    error instanceof Error ? error.message : "Something went wrong"
   const canSearchProjects = !isLoading && !isError && projects.length > 0
   const searchPlaceholder = isError
     ? "Search unavailable"
@@ -155,7 +159,13 @@ const ProjectSelector = () => {
                 </Badge>
               </HStack>
               <Box px={1} opacity={canSearchProjects ? 1 : 0.6}>
-                <Text fontSize="xs" fontWeight="600" color={metaColor} textTransform="uppercase" letterSpacing="0.5px">
+                <Text
+                  fontSize="xs"
+                  fontWeight="600"
+                  color={metaColor}
+                  textTransform="uppercase"
+                  letterSpacing="0.5px"
+                >
                   Search Projects
                 </Text>
               </Box>
@@ -166,12 +176,21 @@ const ProjectSelector = () => {
                 value={searchValue}
                 onChange={(event) => setSearchValue(event.target.value)}
                 onClick={(event) => event.stopPropagation()}
-                _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)" }}
+                _focus={{
+                  borderColor: "blue.500",
+                  boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
+                }}
                 disabled={!canSearchProjects}
               />
               <Stack maxH="320px" overflowY="auto" gap={1}>
                 {isLoading ? (
-                  <Flex align="center" justify="center" py={8} gap={2} color="gray.500">
+                  <Flex
+                    align="center"
+                    justify="center"
+                    py={8}
+                    gap={2}
+                    color="gray.500"
+                  >
                     <Spinner size="sm" />
                     <Text fontSize="sm">Loading projects…</Text>
                   </Flex>
@@ -184,7 +203,12 @@ const ProjectSelector = () => {
                         {errorMessage}
                       </Text>
                     </Stack>
-                    <Button size="sm" variant="outline" onClick={() => refresh()} gap={2}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => refresh()}
+                      gap={2}
+                    >
                       <Icon as={FiRefreshCcw} />
                       Try again
                     </Button>
@@ -202,16 +226,26 @@ const ProjectSelector = () => {
                     </Text>
                   </Box>
                 ) : (
-                  filteredProjects.map(project => (
+                  filteredProjects.map((project) => (
                     <Flex
                       key={project.id}
                       alignItems="center"
                       justifyContent="space-between"
                       p={2.5}
                       borderRadius="md"
-                      borderWidth={selectedProject?.id === project.id ? "1px" : "0px"}
-                      borderColor={selectedProject?.id === project.id ? highlightBorder : "transparent"}
-                      bg={selectedProject?.id === project.id ? highlightBg : "transparent"}
+                      borderWidth={
+                        selectedProject?.id === project.id ? "1px" : "0px"
+                      }
+                      borderColor={
+                        selectedProject?.id === project.id
+                          ? highlightBorder
+                          : "transparent"
+                      }
+                      bg={
+                        selectedProject?.id === project.id
+                          ? highlightBg
+                          : "transparent"
+                      }
                       _hover={{ bg: itemHoverBg }}
                       cursor="pointer"
                       onClick={() => handleProjectSelect(project.id)}
@@ -225,7 +259,12 @@ const ProjectSelector = () => {
                             {project.name}
                           </Text>
                           {selectedProject?.id === project.id && (
-                            <Icon as={FiCheck} color="blue.500" fontSize="16px" flexShrink={0} />
+                            <Icon
+                              as={FiCheck}
+                              color="blue.500"
+                              fontSize="16px"
+                              flexShrink={0}
+                            />
                           )}
                         </Flex>
                         {project.description && (

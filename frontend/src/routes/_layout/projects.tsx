@@ -12,8 +12,8 @@ import { FiFolder } from "react-icons/fi"
 import { z } from "zod"
 
 import { ProjectsService } from "@/client"
-import AddProject from "@/components/Projects/AddProject"
 import { ProjectActionsMenu } from "@/components/Common/ProjectActionsMenu"
+import AddProject from "@/components/Projects/AddProject"
 import {
   PaginationItems,
   PaginationNextTrigger,
@@ -30,7 +30,10 @@ const PER_PAGE = 5
 function getProjectsQueryOptions({ page }: { page: number }) {
   return {
     queryFn: () =>
-      ProjectsService.readProjects({ skip: (page - 1) * PER_PAGE, limit: PER_PAGE }),
+      ProjectsService.readProjects({
+        skip: (page - 1) * PER_PAGE,
+        limit: PER_PAGE,
+      }),
     queryKey: ["projects", { page }],
   }
 }

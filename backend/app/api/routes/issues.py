@@ -1,52 +1,85 @@
 import uuid
-from typing import Any, List
+import logging
 from datetime import datetime
-import httpx
+from typing import Any, List
 
-from fastapi import APIRouter, HTTPException, BackgroundTasks
-from sqlmodel import func, select
+import httpx
+from fastapi import APIRouter, BackgroundTasks, HTTPException
+from sqlalchemy import delete, or_
+from sqlmodel import Session, func, select
 from pydantic import BaseModel
 
 from app.api.deps import CurrentUser, SessionDep
-from app.models import Message
-from app.models.issue import Issue, IssueCreate, IssuePublic, IssuesPublic, IssueUpdate
-from app.models.task import Task, TaskCreate, TaskPublic
+from app.models import Message, Project
+from app.models.issue import (
+    Issue,
+    IssueCreate,
+    IssueDependencyLink,
+    IssuePublic,
+    IssuesPublic,
+    IssueUpdate,
+)
+from app.models.task import Task, TaskPublic
 from app.models.node import Node
 from app.models.repository import Repository
 from app.services.workflow import WorkflowService
 from app.services.github_sync import GitHubSyncService
 from app.services.node_selection import NodeSelectionService
 
-router = APIRouter(prefix="/issues", tags=["issues"])
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
+router = APIRouter(prefix="/issues", tags=["issues"])
 
 @router.get("/", response_model=IssuesPublic)
 def read_issues(
-    session: SessionDep, current_user: CurrentUser, skip: int = 0, limit: int = 100
+    session: SessionDep,
+    current_user: CurrentUser,
+    skip: int = 0,
+    limit: int = 100,
+    search: str | None = None,
+    project_id: uuid.UUID | None = None,
 ) -> Any:
     """获取Issue列表"""
-    if current_user.is_superuser:
-        count_statement = select(func.count()).select_from(Issue)
-        count = session.exec(count_statement).one()
-        statement = select(Issue).offset(skip).limit(limit).order_by(Issue.priority.desc(), Issue.created_at.desc())
-        issues = session.exec(statement).all()
-    else:
-        count_statement = (
-            select(func.count())
-            .select_from(Issue)
-            .where(Issue.owner_id == current_user.id)
-        )
-        count = session.exec(count_statement).one()
-        statement = (
-            select(Issue)
-            .where(Issue.owner_id == current_user.id)
-            .offset(skip)
-            .limit(limit)
-            .order_by(Issue.priority.desc(), Issue.created_at.desc())
-        )
-        issues = session.exec(statement).all()
+    filters: list[Any] = []
+    if not current_user.is_superuser:
+        filters.append(Issue.owner_id == current_user.id)
 
-    return IssuesPublic(data=[IssuePublic(**i.model_dump()) for i in issues], count=count)
+    if project_id:
+        filters.append(Issue.project_id == project_id)
+
+    if search:
+        normalized = f"%{search.strip()}%"
+        filters.append(
+            or_(
+                Issue.title.ilike(normalized),
+                Issue.content.ilike(normalized),
+                Issue.repository_url.ilike(normalized),
+            )
+        )
+
+    count_statement = select(func.count()).select_from(Issue)
+    statement = (
+        select(Issue)
+        .offset(skip)
+        .limit(limit)
+        .order_by(Issue.priority.desc(), Issue.created_at.desc())
+    )
+
+    for condition in filters:
+        count_statement = count_statement.where(condition)
+        statement = statement.where(condition)
+
+    issues = session.exec(statement).all()
+    count = session.exec(count_statement).one()
+
+    dependency_map = _get_dependency_map(session, [issue.id for issue in issues])
+    serialized = [
+        IssuePublic(**issue.model_dump(), dependency_issue_ids=dependency_map.get(issue.id, []))
+        for issue in issues
+    ]
+
+    return IssuesPublic(data=serialized, count=count)
 
 
 @router.get("/{id}", response_model=IssuePublic)
@@ -57,7 +90,8 @@ def read_issue(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) ->
         raise HTTPException(status_code=404, detail="Issue not found")
     if not current_user.is_superuser and (issue.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="Not enough permissions")
-    return IssuePublic(**issue.model_dump())
+    dependency_map = _get_dependency_map(session, [issue.id])
+    return IssuePublic(**issue.model_dump(), dependency_issue_ids=dependency_map.get(issue.id, []))
 
 
 @router.post("/", response_model=IssuePublic)
@@ -65,11 +99,29 @@ def create_issue(
     *, session: SessionDep, current_user: CurrentUser, issue_in: IssueCreate
 ) -> Any:
     """创建新Issue"""
-    issue = Issue.model_validate(issue_in, update={"owner_id": current_user.id})
+    dependency_ids = set(issue_in.dependency_issue_ids or [])
+    issue_data = issue_in.model_dump(exclude={"dependency_issue_ids"})
+    issue = Issue(**issue_data, owner_id=current_user.id)
+
+    _validate_project_access(session, current_user, issue.project_id)
+    _validate_dependency_issues(
+        session,
+        current_user,
+        dependency_ids,
+        exclude_issue_id=issue.id,
+    )
+
     session.add(issue)
+    session.flush()
+    _replace_issue_dependencies(session, issue.id, dependency_ids)
     session.commit()
     session.refresh(issue)
-    return IssuePublic(**issue.model_dump())
+
+    dependency_map = _get_dependency_map(session, [issue.id])
+    return IssuePublic(
+        **issue.model_dump(),
+        dependency_issue_ids=dependency_map.get(issue.id, []),
+    )
 
 
 @router.put("/{id}", response_model=IssuePublic)
@@ -87,13 +139,35 @@ def update_issue(
     if not current_user.is_superuser and (issue.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="Not enough permissions")
     
-    update_dict = issue_in.model_dump(exclude_unset=True)
+    dependency_ids = issue_in.dependency_issue_ids
+    dependency_set = set(dependency_ids) if dependency_ids is not None else None
+
+    update_dict = issue_in.model_dump(exclude_unset=True, exclude={"dependency_issue_ids"})
+
+    prospective_project_id = update_dict.get("project_id", issue.project_id)
+    _validate_project_access(session, current_user, prospective_project_id)
+
+    if dependency_set is not None:
+        _validate_dependency_issues(
+            session,
+            current_user,
+            dependency_set,
+            exclude_issue_id=issue.id,
+        )
+
     issue.sqlmodel_update(update_dict)
     issue.updated_at = datetime.utcnow()
     session.add(issue)
+    session.flush()
+
+    if dependency_set is not None:
+        _replace_issue_dependencies(session, issue.id, dependency_set)
+
     session.commit()
     session.refresh(issue)
-    return IssuePublic(**issue.model_dump())
+
+    dependency_map = _get_dependency_map(session, [issue.id])
+    return IssuePublic(**issue.model_dump(), dependency_issue_ids=dependency_map.get(issue.id, []))
 
 
 @router.delete("/{id}")
@@ -132,8 +206,9 @@ def get_next_pending_issue(session: SessionDep, current_user: CurrentUser) -> An
     issue = session.exec(statement).first()
     if not issue:
         raise HTTPException(status_code=404, detail="No pending issues found")
-    
-    return IssuePublic(**issue.model_dump())
+
+    dependency_map = _get_dependency_map(session, [issue.id])
+    return IssuePublic(**issue.model_dump(), dependency_issue_ids=dependency_map.get(issue.id, []))
 
 
 @router.post("/{id}/process")
@@ -261,18 +336,20 @@ async def start_issue_task(
     4. 创建任务记录
     5. 下发任务给node处理
     """
+    logger.info(f"Starting task for issue {id} by user {current_user.id}")
+
     # 获取issue
     issue = session.get(Issue, id)
     if not issue:
         raise HTTPException(status_code=404, detail="Issue not found")
-    
+
     if not current_user.is_superuser and (issue.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="Not enough permissions")
-    
+
     # 检查issue状态
     if issue.status == "processing":
         raise HTTPException(status_code=400, detail="Issue is already being processed")
-    
+
     # 查询关联的仓库
     if not issue.repository_url:
         raise HTTPException(status_code=400, detail="Issue has no associated repository")
@@ -320,7 +397,7 @@ async def start_issue_task(
             "repository_url": issue.repository_url,
             "issue_number": issue.issue_number,
             "issue_title": issue.title,
-            "issue_description": issue.description,
+            "issue_content": issue.content,
             "credential_token": credential.token,
             "command": command
         }
@@ -353,7 +430,7 @@ class ReportBranchRequest(BaseModel):
     error_message: str | None = None
 
 
-@router.post("/{id}/report-branch")
+@router.post("/{id}/report")
 async def report_branch(
     *,
     session: SessionDep,
@@ -402,4 +479,82 @@ async def report_branch(
     session.commit()
     
     return Message(message=f"Branch {request.branch_name} reported successfully")
+
+
+def _get_dependency_map(session: Session, issue_ids: list[uuid.UUID]) -> dict[uuid.UUID, list[uuid.UUID]]:
+    if not issue_ids:
+        return {}
+
+    statement = select(IssueDependencyLink).where(IssueDependencyLink.issue_id.in_(issue_ids))
+    links = session.exec(statement).all()
+
+    mapping: dict[uuid.UUID, list[uuid.UUID]] = {issue_id: [] for issue_id in issue_ids}
+    for link in links:
+        mapping.setdefault(link.issue_id, []).append(link.depends_on_issue_id)
+    return mapping
+
+
+def _replace_issue_dependencies(
+    session: Session,
+    issue_id: uuid.UUID,
+    dependency_ids: set[uuid.UUID],
+) -> None:
+    session.exec(
+        delete(IssueDependencyLink).where(IssueDependencyLink.issue_id == issue_id)
+    )
+
+    if dependency_ids:
+        session.add_all(
+            [
+                IssueDependencyLink(issue_id=issue_id, depends_on_issue_id=dep_id)
+                for dep_id in dependency_ids
+            ]
+        )
+
+
+def _validate_project_access(
+    session: Session,
+    current_user: CurrentUser,
+    project_id: uuid.UUID | None,
+) -> None:
+    if not project_id:
+        return
+
+    project = session.get(Project, project_id)
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    if not current_user.is_superuser and project.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not enough permissions to use this project")
+
+
+def _validate_dependency_issues(
+    session: Session,
+    current_user: CurrentUser,
+    dependency_ids: set[uuid.UUID],
+    *,
+    exclude_issue_id: uuid.UUID | None = None,
+) -> None:
+    if not dependency_ids:
+        return
+
+    if exclude_issue_id:
+        dependency_ids.discard(exclude_issue_id)
+
+    if not dependency_ids:
+        return
+
+    statement = select(Issue).where(Issue.id.in_(dependency_ids))
+    dependencies = session.exec(statement).all()
+    found_ids = {dep.id for dep in dependencies}
+    missing = dependency_ids - found_ids
+
+    if missing:
+        missing_str = ", ".join(str(dep_id) for dep_id in missing)
+        raise HTTPException(status_code=404, detail=f"Dependency issues not found: {missing_str}")
+
+    if not current_user.is_superuser:
+        unauthorized = [dep.id for dep in dependencies if dep.owner_id != current_user.id]
+        if unauthorized:
+            raise HTTPException(status_code=403, detail="Not enough permissions to reference some dependency issues")
 

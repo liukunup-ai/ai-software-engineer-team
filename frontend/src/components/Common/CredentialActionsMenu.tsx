@@ -1,7 +1,7 @@
 import { IconButton } from "@chakra-ui/react"
 import { useState } from "react"
-import { FiEdit, FiTrash } from "react-icons/fi"
 import { BsThreeDotsVertical } from "react-icons/bs"
+import { FiEdit, FiTrash } from "react-icons/fi"
 
 import type { CredentialPublic } from "@/client"
 import DeleteCredential from "@/components/Credentials/DeleteCredential"
@@ -12,7 +12,9 @@ interface CredentialActionsMenuProps {
   credential: CredentialPublic
 }
 
-export const CredentialActionsMenu = ({ credential }: CredentialActionsMenuProps) => {
+export const CredentialActionsMenu = ({
+  credential,
+}: CredentialActionsMenuProps) => {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
@@ -20,7 +22,11 @@ export const CredentialActionsMenu = ({ credential }: CredentialActionsMenuProps
     <>
       <MenuRoot>
         <MenuTrigger asChild>
-          <IconButton variant="ghost" color="inherit" aria-label="Open actions menu">
+          <IconButton
+            variant="ghost"
+            color="inherit"
+            aria-label="Open actions menu"
+          >
             <BsThreeDotsVertical />
           </IconButton>
         </MenuTrigger>

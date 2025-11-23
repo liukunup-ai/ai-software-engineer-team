@@ -1,8 +1,4 @@
-import {
-  Button,
-  DialogActionTrigger,
-  Text,
-} from "@chakra-ui/react"
+import { Button, DialogActionTrigger, Text } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { RepositoriesService } from "@/client"

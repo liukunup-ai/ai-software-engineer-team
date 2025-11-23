@@ -1,13 +1,11 @@
-import {
-  Button,
-  Text,
-} from "@chakra-ui/react"
+import { Button, Text } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { type ApiError, IssuesService } from "@/client"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 import {
+  DialogActionTrigger,
   DialogBody,
   DialogCloseTrigger,
   DialogContent,
@@ -15,7 +13,6 @@ import {
   DialogHeader,
   DialogRoot,
   DialogTitle,
-  DialogActionTrigger,
 } from "../ui/dialog"
 
 interface DeleteIssueProps {
@@ -58,9 +55,7 @@ const DeleteIssue = ({ id, isOpen, onClose }: DeleteIssueProps) => {
           <DialogTitle>Delete Issue</DialogTitle>
         </DialogHeader>
         <DialogBody>
-          <Text>
-            Are you sure you want to delete this issue?
-          </Text>
+          <Text>Are you sure you want to delete this issue?</Text>
           <Text color="red.600" mt={2}>
             This action cannot be undone.
           </Text>

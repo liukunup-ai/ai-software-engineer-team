@@ -12,8 +12,8 @@ import { FiFolder } from "react-icons/fi"
 import { z } from "zod"
 
 import { RepositoriesService } from "@/client"
-import AddRepository from "@/components/Repositories/AddRepository"
 import { RepositoryActionsMenu } from "@/components/Common/RepositoryActionsMenu"
+import AddRepository from "@/components/Repositories/AddRepository"
 import {
   PaginationItems,
   PaginationNextTrigger,
@@ -30,7 +30,10 @@ const PER_PAGE = 5
 function getRepositoriesQueryOptions({ page }: { page: number }) {
   return {
     queryFn: () =>
-      RepositoriesService.readRepositories({ skip: (page - 1) * PER_PAGE, limit: PER_PAGE }),
+      RepositoriesService.readRepositories({
+        skip: (page - 1) * PER_PAGE,
+        limit: PER_PAGE,
+      }),
     queryKey: ["repositories", { page }],
   }
 }
@@ -71,7 +74,9 @@ function RepositoriesTable() {
             <FiFolder />
           </EmptyState.Indicator>
           <VStack textAlign="center">
-            <EmptyState.Title>You don't have any repositories yet</EmptyState.Title>
+            <EmptyState.Title>
+              You don't have any repositories yet
+            </EmptyState.Title>
             <EmptyState.Description>
               Add a new repository to get started
             </EmptyState.Description>
@@ -95,7 +100,10 @@ function RepositoriesTable() {
         </Table.Header>
         <Table.Body>
           {repositories?.map((repository) => (
-            <Table.Row key={repository.id} opacity={isPlaceholderData ? 0.5 : 1}>
+            <Table.Row
+              key={repository.id}
+              opacity={isPlaceholderData ? 0.5 : 1}
+            >
               <Table.Cell truncate maxW="sm">
                 {repository.name}
               </Table.Cell>
@@ -109,9 +117,7 @@ function RepositoriesTable() {
               >
                 {repository.description || "N/A"}
               </Table.Cell>
-              <Table.Cell>
-                {repository.is_public ? "Yes" : "No"}
-              </Table.Cell>
+              <Table.Cell>{repository.is_public ? "Yes" : "No"}</Table.Cell>
               <Table.Cell>
                 <RepositoryActionsMenu repository={repository} />
               </Table.Cell>

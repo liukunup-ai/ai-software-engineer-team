@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     SECRET_KEY: str = secrets.token_urlsafe(32)
     # Node registration key - 用于从节点注册验证
-    NODE_REGISTRATION_KEY: str = secrets.token_urlsafe(32)
+    REGISTER_KEY: str = secrets.token_urlsafe(32)
     # 节点状态离线检测配置
     NODE_OFFLINE_CHECK_INTERVAL_SECONDS: int = 30  # 后台线程检查间隔
     NODE_OFFLINE_THRESHOLD_SECONDS: int = 30       # 最近心跳超过该秒数则置为 offline

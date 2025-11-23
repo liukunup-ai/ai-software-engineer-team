@@ -1,7 +1,7 @@
 import { IconButton } from "@chakra-ui/react"
 import { useState } from "react"
-import { FiEdit, FiTrash } from "react-icons/fi"
 import { BsThreeDotsVertical } from "react-icons/bs"
+import { FiEdit, FiTrash } from "react-icons/fi"
 
 import type { PromptPublic } from "@/client"
 import DeletePrompt from "@/components/Prompts/DeletePrompt"
@@ -20,7 +20,11 @@ export const PromptActionsMenu = ({ prompt }: PromptActionsMenuProps) => {
     <>
       <MenuRoot>
         <MenuTrigger asChild>
-          <IconButton variant="ghost" color="inherit" aria-label="Open actions menu">
+          <IconButton
+            variant="ghost"
+            color="inherit"
+            aria-label="Open actions menu"
+          >
             <BsThreeDotsVertical />
           </IconButton>
         </MenuTrigger>

@@ -9,11 +9,11 @@ class CommandRequest(BaseModel):
 
 
 class CommandResponse(BaseModel):
-    """命令执行结果"""
+    """命令执行响应"""
     command: str
-    args: List[str]
+    args: List[str] = []
 
     exit_code: int
     stdout: str
     stderr: str
-    error_message: str = None
+    error_message: str | None = None

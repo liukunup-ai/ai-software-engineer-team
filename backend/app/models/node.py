@@ -4,10 +4,11 @@ from typing import TYPE_CHECKING, Optional, List
 from datetime import datetime
 from sqlmodel import Field, Relationship, SQLModel
 
-from .common import NodeCredentialLink
+from .common import NodeCredentialLink, ProjectNodeLink
 if TYPE_CHECKING:
     from .user import User
     from .credential import Credential
+    from .project import Project
 
 
 class NodeBase(SQLModel):
@@ -40,6 +41,7 @@ class Node(NodeBase, table=True):
     last_heartbeat: datetime | None = Field(default=None)
 
     credentials: List["Credential"] = Relationship(back_populates="nodes", link_model=NodeCredentialLink)
+    projects: List["Project"] = Relationship(back_populates="nodes", link_model=ProjectNodeLink)
 
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)

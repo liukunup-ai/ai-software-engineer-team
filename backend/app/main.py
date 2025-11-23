@@ -36,5 +36,4 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.on_event("startup")
 def _startup() -> None:
-    # 启动后台节点离线检测线程
     start_node_monitor()

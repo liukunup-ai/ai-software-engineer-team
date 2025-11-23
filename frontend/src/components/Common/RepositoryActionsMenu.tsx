@@ -1,7 +1,7 @@
 import { IconButton } from "@chakra-ui/react"
 import { useState } from "react"
-import { FiEdit, FiTrash } from "react-icons/fi"
 import { BsThreeDotsVertical } from "react-icons/bs"
+import { FiEdit, FiTrash } from "react-icons/fi"
 
 import type { RepositoryPublic } from "@/client"
 import DeleteRepository from "@/components/Repositories/DeleteRepository"
@@ -12,7 +12,9 @@ interface RepositoryActionsMenuProps {
   repository: RepositoryPublic
 }
 
-export const RepositoryActionsMenu = ({ repository }: RepositoryActionsMenuProps) => {
+export const RepositoryActionsMenu = ({
+  repository,
+}: RepositoryActionsMenuProps) => {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
@@ -20,7 +22,11 @@ export const RepositoryActionsMenu = ({ repository }: RepositoryActionsMenuProps
     <>
       <MenuRoot>
         <MenuTrigger asChild>
-          <IconButton variant="ghost" color="inherit" aria-label="Open actions menu">
+          <IconButton
+            variant="ghost"
+            color="inherit"
+            aria-label="Open actions menu"
+          >
             <BsThreeDotsVertical />
           </IconButton>
         </MenuTrigger>

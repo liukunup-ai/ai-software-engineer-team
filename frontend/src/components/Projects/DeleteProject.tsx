@@ -1,8 +1,4 @@
-import {
-  Button,
-  DialogActionTrigger,
-  Text,
-} from "@chakra-ui/react"
+import { Button, DialogActionTrigger, Text } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { ProjectsService } from "@/client"
@@ -26,12 +22,7 @@ interface DeleteProjectProps {
   onClose: () => void
 }
 
-const DeleteProject = ({
-  id,
-  name,
-  isOpen,
-  onClose,
-}: DeleteProjectProps) => {
+const DeleteProject = ({ id, name, isOpen, onClose }: DeleteProjectProps) => {
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
 

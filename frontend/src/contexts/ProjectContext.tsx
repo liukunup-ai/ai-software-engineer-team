@@ -1,15 +1,15 @@
+import { useQuery } from "@tanstack/react-query"
 import {
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
-  type ReactNode,
 } from "react"
-import { useQuery } from "@tanstack/react-query"
 
-import { ProjectsService, type ProjectPublic } from "@/client"
+import { type ProjectPublic, ProjectsService } from "@/client"
 
 type ProjectContextValue = {
   projects: ProjectPublic[]
@@ -35,7 +35,9 @@ const getInitialSelection = () => {
 }
 
 export const ProjectProvider = ({ children }: { children: ReactNode }) => {
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(getInitialSelection)
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+    getInitialSelection,
+  )
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryFn: () => ProjectsService.readProjects({ skip: 0, limit: 100 }),
@@ -46,7 +48,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
   const projects = data?.data ?? []
 
   const selectedProject = useMemo(() => {
-    return projects.find(project => project.id === selectedProjectId)
+    return projects.find((project) => project.id === selectedProjectId)
   }, [projects, selectedProjectId])
 
   const persistSelection = useCallback((projectId: string | null) => {
@@ -80,7 +82,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
       return
     }
 
-    const match = projects.some(project => project.id === selectedProjectId)
+    const match = projects.some((project) => project.id === selectedProjectId)
     if (!match) {
       selectProject(projects[0].id)
     }
@@ -101,10 +103,21 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
       selectProject,
       refresh,
     }),
-    [projects, isLoading, isError, error, selectedProjectId, selectedProject, selectProject, refresh],
+    [
+      projects,
+      isLoading,
+      isError,
+      error,
+      selectedProjectId,
+      selectedProject,
+      selectProject,
+      refresh,
+    ],
   )
 
-  return <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>
+  return (
+    <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>
+  )
 }
 
 export const useProjectContext = () => {

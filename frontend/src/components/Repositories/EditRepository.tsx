@@ -9,13 +9,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Controller, type SubmitHandler, useForm } from "react-hook-form"
 
 import {
-  type RepositoryUpdate,
-  type RepositoryPublic,
   RepositoriesService,
+  type RepositoryPublic,
+  type RepositoryUpdate,
 } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
+import { Checkbox } from "../ui/checkbox"
 import {
   DialogBody,
   DialogCloseTrigger,
@@ -25,7 +26,6 @@ import {
   DialogRoot,
   DialogTitle,
 } from "../ui/dialog"
-import { Checkbox } from "../ui/checkbox"
 import { Field } from "../ui/field"
 
 interface EditRepositoryProps {
@@ -34,7 +34,11 @@ interface EditRepositoryProps {
   onClose: () => void
 }
 
-const EditRepository = ({ repository, isOpen, onClose }: EditRepositoryProps) => {
+const EditRepository = ({
+  repository,
+  isOpen,
+  onClose,
+}: EditRepositoryProps) => {
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
   const {

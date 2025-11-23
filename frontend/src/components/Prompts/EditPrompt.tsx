@@ -3,17 +3,13 @@ import {
   DialogActionTrigger,
   Input,
   Text,
-  VStack,
   Textarea,
+  VStack,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
 
-import {
-  type PromptUpdate,
-  type PromptPublic,
-  PromptsService,
-} from "@/client"
+import { type PromptPublic, PromptsService, type PromptUpdate } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"

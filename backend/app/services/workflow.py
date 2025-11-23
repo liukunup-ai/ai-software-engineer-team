@@ -10,7 +10,7 @@ from typing import Optional
 from sqlmodel import Session, select
 from app.models.issue import Issue
 from app.models.node import Node
-from app.models.command import CommandRequest, CommandResult
+from app.models.command import CommandRequest, CommandResponse
 
 
 class WorkflowService:
@@ -27,7 +27,7 @@ class WorkflowService:
         command: str, 
         args: list[str] | None = None,
         working_dir: str | None = None
-    ) -> CommandResult:
+    ) -> CommandResponse:
         """
         在指定节点上执行命令
         :param node: 节点对象
@@ -54,7 +54,7 @@ class WorkflowService:
                 json=cmd_request.model_dump()
             )
             response.raise_for_status()
-            return CommandResult(**response.json())
+            return CommandResponse(**response.json())
     
     @staticmethod
     async def init_repository(
@@ -145,7 +145,10 @@ class WorkflowService:
                 results["init"] = init_results
             
             # 2. 构造AI Coding命令
-            ai_prompt = f"Fix Issue #{issue.issue_number}: {issue.title}\n\nDescription:\n{issue.description or 'No description provided'}\n\nPlease analyze the issue, implement the fix, and ensure all tests pass."
+            ai_prompt = (
+                f"Fix Issue #{issue.issue_number}: {issue.title}\n\nDescription:\n"
+                f"{issue.content or 'No description provided'}\n\nPlease analyze the issue, implement the fix, and ensure all tests pass."
+            )
             
             # 执行AI Coding CLI命令 (假设命令为 qoder)
             coding_result = await WorkflowService.execute_command_on_node(

@@ -23,6 +23,7 @@ import type { ApiError } from "@/client/core/ApiError"
 import { CREDENTIAL_CATEGORY_OPTIONS } from "@/constants/credentials"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
+import { Checkbox } from "../ui/checkbox"
 import {
   DialogBody,
   DialogCloseTrigger,
@@ -33,7 +34,6 @@ import {
   DialogTrigger,
 } from "../ui/dialog"
 import { Field } from "../ui/field"
-import { Checkbox } from "../ui/checkbox"
 import { Radio, RadioGroup } from "../ui/radio"
 
 const AddCredential = () => {

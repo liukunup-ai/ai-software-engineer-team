@@ -88,7 +88,7 @@ def read_credential(session: SessionDep, current_user: CurrentUser, id: uuid.UUI
 
 @router.post("/", response_model=CredentialPublic)
 def create_credential(
-    *, session: SessionDep, current_user: CurrentUser, credential_in: CredentialCreate
+    *, session: SessionDep, current_user: CurrentUser, credential_in: CredentialCreate # type: ignore
 ) -> Any:
     """
     Create new credential.

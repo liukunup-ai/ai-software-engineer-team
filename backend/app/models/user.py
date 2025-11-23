@@ -5,6 +5,7 @@ from datetime import datetime
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
+from .common import ProjectMemberLink
 if TYPE_CHECKING:
     from .project import Project
     from .repository import Repository
@@ -53,13 +54,18 @@ class User(UserBase, table=True):
     hashed_password: str
 
     projects: List["Project"] = Relationship(back_populates="owner", cascade_delete=True)
-    project_members: List["Project"] = Relationship(back_populates="members", cascade_delete=True)
     repositories: List["Repository"] = Relationship(back_populates="owner", cascade_delete=True)
     issues: List["Issue"] = Relationship(back_populates="owner", cascade_delete=True)
     nodes: List["Node"] = Relationship(back_populates="owner", cascade_delete=True)
     credentials: List["Credential"] = Relationship(back_populates="owner", cascade_delete=True)
     prompts: List["Prompt"] = Relationship(back_populates="owner", cascade_delete=True)
     tasks: List["Task"] = Relationship(back_populates="owner", cascade_delete=True)
+
+    project_members: List["Project"] = Relationship(
+        back_populates="members",
+        link_model=ProjectMemberLink,
+        sa_relationship_kwargs={"overlaps": "projects"},
+    )
 
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
@@ -71,5 +77,5 @@ class UserPublic(UserBase):
 
 
 class UsersPublic(SQLModel):
-    data: list[UserPublic]
+    data: List[UserPublic]
     count: int

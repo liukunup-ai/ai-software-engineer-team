@@ -1,19 +1,26 @@
 import {
+  Box,
   Button,
   DialogActionTrigger,
+  HStack,
+  IconButton,
   Input,
   Text,
   Textarea,
   VStack,
-  HStack,
-  IconButton,
-  Box,
 } from "@chakra-ui/react"
-import React from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import React from "react"
 import { type SubmitHandler, useForm } from "react-hook-form"
-import { type ProjectUpdate, ProjectPublic, ProjectsService } from "@/client"
+import { FiPlus, FiX } from "react-icons/fi"
+import {
+  type ProjectPublic,
+  ProjectsService,
+  type ProjectUpdate,
+} from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
+import useCustomToast from "@/hooks/useCustomToast"
+import { handleError } from "@/utils"
 import {
   DialogBody,
   DialogCloseTrigger,
@@ -23,10 +30,7 @@ import {
   DialogRoot,
   DialogTitle,
 } from "../ui/dialog"
-import { FiX, FiPlus } from "react-icons/fi"
 import { Field } from "../ui/field"
-import useCustomToast from "@/hooks/useCustomToast"
-import { handleError } from "@/utils"
 
 interface EditProjectProps {
   project: ProjectPublic
@@ -38,7 +42,7 @@ const EditProject = ({ project, isOpen, onClose }: EditProjectProps) => {
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
   const [repositories, setRepositories] = React.useState<string[]>(
-    (project as any).repository_urls || []
+    (project as any).repository_urls || [],
   )
   const MAX_REPOSITORIES = 20
 
@@ -91,7 +95,7 @@ const EditProject = ({ project, isOpen, onClose }: EditProjectProps) => {
   })
 
   const onSubmit: SubmitHandler<ProjectUpdate> = (data) => {
-    const filteredRepos = repositories.filter(url => url.trim() !== "")
+    const filteredRepos = repositories.filter((url) => url.trim() !== "")
     mutation.mutate({
       ...data,
       repository_urls: filteredRepos.length > 0 ? filteredRepos : undefined,
@@ -106,7 +110,11 @@ const EditProject = ({ project, isOpen, onClose }: EditProjectProps) => {
 
   return (
     <DialogRoot
-      size={repositories.length > 10 ? { base: "xl", md: "xl" } : { base: "xs", md: "md" }}
+      size={
+        repositories.length > 10
+          ? { base: "xl", md: "xl" }
+          : { base: "xs", md: "md" }
+      }
       placement="center"
       open={isOpen}
       onOpenChange={({ open }) => {
@@ -154,46 +162,64 @@ const EditProject = ({ project, isOpen, onClose }: EditProjectProps) => {
                   <Box width="100%">
                     <HStack align="start" gap={4} width="100%">
                       <VStack gap={2} align="stretch" width="50%">
-                        {repositories.slice(0, Math.ceil(repositories.length / 2)).map((repo, index) => (
-                          <HStack key={index} gap={2}>
-                            <Input
-                              value={repo}
-                              onChange={(e) => updateRepository(index, e.target.value)}
-                              placeholder="https://github.com/user/repo"
-                              type="text"
-                            />
-                            <IconButton
-                              aria-label="Remove repository"
-                              onClick={() => removeRepository(index)}
-                              size="sm"
-                              variant="ghost"
-                              colorPalette="red"
-                            >
-                              <FiX />
-                            </IconButton>
-                          </HStack>
-                        ))}
+                        {repositories
+                          .slice(0, Math.ceil(repositories.length / 2))
+                          .map((repo, index) => (
+                            <HStack key={index} gap={2}>
+                              <Input
+                                value={repo}
+                                onChange={(e) =>
+                                  updateRepository(index, e.target.value)
+                                }
+                                placeholder="https://github.com/user/repo"
+                                type="text"
+                              />
+                              <IconButton
+                                aria-label="Remove repository"
+                                onClick={() => removeRepository(index)}
+                                size="sm"
+                                variant="ghost"
+                                colorPalette="red"
+                              >
+                                <FiX />
+                              </IconButton>
+                            </HStack>
+                          ))}
                       </VStack>
                       <VStack gap={2} align="stretch" width="50%">
-                        {repositories.slice(Math.ceil(repositories.length / 2)).map((repo, index) => (
-                          <HStack key={index + Math.ceil(repositories.length / 2)} gap={2}>
-                            <Input
-                              value={repo}
-                              onChange={(e) => updateRepository(index + Math.ceil(repositories.length / 2), e.target.value)}
-                              placeholder="https://github.com/user/repo"
-                              type="text"
-                            />
-                            <IconButton
-                              aria-label="Remove repository"
-                              onClick={() => removeRepository(index + Math.ceil(repositories.length / 2))}
-                              size="sm"
-                              variant="ghost"
-                              colorPalette="red"
+                        {repositories
+                          .slice(Math.ceil(repositories.length / 2))
+                          .map((repo, index) => (
+                            <HStack
+                              key={index + Math.ceil(repositories.length / 2)}
+                              gap={2}
                             >
-                              <FiX />
-                            </IconButton>
-                          </HStack>
-                        ))}
+                              <Input
+                                value={repo}
+                                onChange={(e) =>
+                                  updateRepository(
+                                    index + Math.ceil(repositories.length / 2),
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="https://github.com/user/repo"
+                                type="text"
+                              />
+                              <IconButton
+                                aria-label="Remove repository"
+                                onClick={() =>
+                                  removeRepository(
+                                    index + Math.ceil(repositories.length / 2),
+                                  )
+                                }
+                                size="sm"
+                                variant="ghost"
+                                colorPalette="red"
+                              >
+                                <FiX />
+                              </IconButton>
+                            </HStack>
+                          ))}
                       </VStack>
                     </HStack>
                     {repositories.length < MAX_REPOSITORIES ? (
@@ -222,7 +248,9 @@ const EditProject = ({ project, isOpen, onClose }: EditProjectProps) => {
                       <HStack key={index} gap={2}>
                         <Input
                           value={repo}
-                          onChange={(e) => updateRepository(index, e.target.value)}
+                          onChange={(e) =>
+                            updateRepository(index, e.target.value)
+                          }
                           placeholder="https://github.com/user/repo"
                           type="text"
                         />
@@ -251,7 +279,8 @@ const EditProject = ({ project, isOpen, onClose }: EditProjectProps) => {
                     ) : (
                       <Box p={2} bg="blue.50" borderRadius="md">
                         <Text fontSize="xs" color="blue.700">
-                          Maximum {MAX_REPOSITORIES} repositories reached. You can add more after saving.
+                          Maximum {MAX_REPOSITORIES} repositories reached. You
+                          can add more after saving.
                         </Text>
                       </Box>
                     )}

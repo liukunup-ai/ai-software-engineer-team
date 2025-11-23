@@ -2,8 +2,8 @@ import { IconButton } from "@chakra-ui/react"
 import { useState } from "react"
 import { BsThreeDotsVertical } from "react-icons/bs"
 import { FiEdit, FiTrash } from "react-icons/fi"
-import EditNode from "../Nodes/EditNode"
 import DeleteNode from "../Nodes/DeleteNode"
+import EditNode from "../Nodes/EditNode"
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu"
 
 interface NodeActionsMenuProps {
@@ -18,7 +18,11 @@ export const NodeActionsMenu = ({ node }: NodeActionsMenuProps) => {
     <>
       <MenuRoot>
         <MenuTrigger asChild>
-          <IconButton variant="ghost" color="inherit" aria-label="Open actions menu">
+          <IconButton
+            variant="ghost"
+            color="inherit"
+            aria-label="Open actions menu"
+          >
             <BsThreeDotsVertical />
           </IconButton>
         </MenuTrigger>
@@ -33,8 +37,16 @@ export const NodeActionsMenu = ({ node }: NodeActionsMenuProps) => {
           </MenuItem>
         </MenuContent>
       </MenuRoot>
-      <EditNode node={node} isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
-      <DeleteNode id={node.id} isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} />
+      <EditNode
+        node={node}
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+      />
+      <DeleteNode
+        id={node.id}
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+      />
     </>
   )
 }

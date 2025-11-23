@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
-import { FiPlay, FiLoader, FiCheckCircle, FiXCircle } from "react-icons/fi"
+import { FiCheckCircle, FiLoader, FiPlay, FiXCircle } from "react-icons/fi"
 
 import type { IssuePublic } from "@/client"
 import { IssuesService } from "@/client"
@@ -26,6 +26,7 @@ export const StartIssueButton = ({ issue }: StartIssueButtonProps) => {
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
   const [isStarting, setIsStarting] = useState(false)
+  const isRepositoryMissing = !issue.repository_url
 
   const getButtonConfig = () => {
     switch (issue.status) {
@@ -94,6 +95,10 @@ export const StartIssueButton = ({ issue }: StartIssueButtonProps) => {
   })
 
   const handleStart = () => {
+    if (isRepositoryMissing) {
+      return
+    }
+
     if (issue.status === "pending" || issue.status === "terminated") {
       mutation.mutate()
     }
@@ -108,8 +113,13 @@ export const StartIssueButton = ({ issue }: StartIssueButtonProps) => {
         size="sm"
         colorScheme={config.colorScheme}
         onClick={handleStart}
-        disabled={config.isDisabled || isStarting}
+        disabled={config.isDisabled || isStarting || isRepositoryMissing}
         loading={isStarting}
+        title={
+          isRepositoryMissing
+            ? "Add a repository URL to start automation"
+            : undefined
+        }
       >
         {config.icon}
         {config.label}

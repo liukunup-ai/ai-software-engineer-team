@@ -140,6 +140,8 @@ export class IssuesService {
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
+     * @param data.search
+     * @param data.projectId
      * @returns IssuesPublic Successful Response
      * @throws ApiError
      */
@@ -149,7 +151,9 @@ export class IssuesService {
             url: '/api/v1/issues/',
             query: {
                 skip: data.skip,
-                limit: data.limit
+                limit: data.limit,
+                search: data.search,
+                project_id: data.projectId
             },
             errors: {
                 422: 'Validation Error'
@@ -730,6 +734,7 @@ export class ProjectsService {
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
+     * @param data.search
      * @returns ProjectsPublic Successful Response
      * @throws ApiError
      */
@@ -739,7 +744,8 @@ export class ProjectsService {
             url: '/api/v1/projects/',
             query: {
                 skip: data.skip,
-                limit: data.limit
+                limit: data.limit,
+                search: data.search
             },
             errors: {
                 422: 'Validation Error'

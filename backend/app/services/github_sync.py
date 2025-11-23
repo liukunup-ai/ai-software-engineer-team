@@ -149,7 +149,7 @@ class GitHubSyncService:
                     continue
                 
                 existing_issue.title = gh_issue['title']
-                existing_issue.description = gh_issue.get('body', '')
+                existing_issue.content = gh_issue.get('body', '')
                 existing_issue.priority = priority
                 existing_issue.updated_at = datetime.utcnow()
                 session.add(existing_issue)
@@ -159,7 +159,7 @@ class GitHubSyncService:
                 new_issue = Issue(
                     owner_id=owner_id,
                     title=gh_issue['title'],
-                    description=gh_issue.get('body', ''),
+                    content=gh_issue.get('body', ''),
                     repository_url=repo_url,
                     issue_number=issue_number,
                     priority=priority,

@@ -1,20 +1,20 @@
 import {
+  Box,
   Button,
   DialogActionTrigger,
   DialogTitle,
+  HStack,
+  IconButton,
   Input,
   Text,
   Textarea,
   VStack,
-  HStack,
-  IconButton,
-  Box,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { type SubmitHandler, useForm } from "react-hook-form"
 import { FaPlus } from "react-icons/fa"
-import { FiX, FiPlus } from "react-icons/fi"
+import { FiPlus, FiX } from "react-icons/fi"
 
 import { type ProjectCreate, ProjectsService } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
@@ -90,7 +90,7 @@ const AddProject = () => {
   })
 
   const onSubmit: SubmitHandler<ProjectFormData> = (data) => {
-    const filteredRepos = repositories.filter(url => url.trim() !== "")
+    const filteredRepos = repositories.filter((url) => url.trim() !== "")
     mutation.mutate({
       ...data,
       repository_urls: filteredRepos.length > 0 ? filteredRepos : undefined,
@@ -156,7 +156,9 @@ const AddProject = () => {
                     <HStack key={index} gap={2}>
                       <Input
                         value={repo}
-                        onChange={(e) => updateRepository(index, e.target.value)}
+                        onChange={(e) =>
+                          updateRepository(index, e.target.value)
+                        }
                         placeholder="https://github.com/user/repo"
                         type="text"
                       />
@@ -185,7 +187,8 @@ const AddProject = () => {
                   ) : (
                     <Box p={2} bg="blue.50" borderRadius="md">
                       <Text fontSize="xs" color="blue.700">
-                        Maximum {MAX_REPOSITORIES} repositories reached. You can add more after creating the project.
+                        Maximum {MAX_REPOSITORIES} repositories reached. You can
+                        add more after creating the project.
                       </Text>
                     </Box>
                   )}

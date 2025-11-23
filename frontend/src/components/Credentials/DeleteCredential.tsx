@@ -1,8 +1,4 @@
-import {
-  Button,
-  DialogActionTrigger,
-  Text,
-} from "@chakra-ui/react"
+import { Button, DialogActionTrigger, Text } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { CredentialsService } from "@/client"
@@ -70,8 +66,8 @@ const DeleteCredential = ({
         </DialogHeader>
         <DialogBody>
           <Text>
-            Are you sure you want to delete the credential "{title}"? This action
-            cannot be undone.
+            Are you sure you want to delete the credential "{title}"? This
+            action cannot be undone.
           </Text>
         </DialogBody>
         <DialogFooter gap={2}>

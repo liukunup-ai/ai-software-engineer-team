@@ -12,8 +12,8 @@ import { FiMessageSquare } from "react-icons/fi"
 import { z } from "zod"
 
 import { PromptsService } from "@/client"
-import AddPrompt from "@/components/Prompts/AddPrompt"
 import { PromptActionsMenu } from "@/components/Common/PromptActionsMenu"
+import AddPrompt from "@/components/Prompts/AddPrompt"
 import {
   PaginationItems,
   PaginationNextTrigger,
@@ -30,7 +30,10 @@ const PER_PAGE = 5
 function getPromptsQueryOptions({ page }: { page: number }) {
   return {
     queryFn: () =>
-      PromptsService.readPrompts({ skip: (page - 1) * PER_PAGE, limit: PER_PAGE }),
+      PromptsService.readPrompts({
+        skip: (page - 1) * PER_PAGE,
+        limit: PER_PAGE,
+      }),
     queryKey: ["prompts", { page }],
   }
 }

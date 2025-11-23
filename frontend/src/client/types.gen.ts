@@ -108,6 +108,8 @@ export type IssueCreate = {
     status?: string;
     priority?: number;
     assigned_node_id?: (string | null);
+    project_id?: (string | null);
+    dependency_issue_ids?: Array<(string)>;
 };
 
 export type IssuePublic = {
@@ -118,6 +120,7 @@ export type IssuePublic = {
     status?: string;
     priority?: number;
     assigned_node_id?: (string | null);
+    project_id?: (string | null);
     id: string;
     owner_id: string;
     created_at: string;
@@ -126,6 +129,7 @@ export type IssuePublic = {
     completed_at?: (string | null);
     error_message?: (string | null);
     result_branch?: (string | null);
+    dependency_issue_ids?: Array<(string)>;
 };
 
 export type IssuesPublic = {
@@ -150,6 +154,8 @@ export type IssueUpdate = {
     status?: (string | null);
     priority?: (number | null);
     assigned_node_id?: (string | null);
+    project_id?: (string | null);
+    dependency_issue_ids?: (Array<(string)> | null);
 };
 
 export type Message = {
@@ -461,6 +467,8 @@ export type DashboardGetDashboardStatsResponse = (DashboardStats);
 
 export type IssuesReadIssuesData = {
     limit?: number;
+    projectId?: (string | null);
+    search?: (string | null);
     skip?: number;
 };
 
@@ -628,6 +636,7 @@ export type PrivateCreateUserResponse = (UserPublic);
 
 export type ProjectsReadProjectsData = {
     limit?: number;
+    search?: (string | null);
     skip?: number;
 };
 

@@ -15,23 +15,31 @@ if TYPE_CHECKING:
 class ProjectBase(SQLModel):
     name: str = Field(min_length=1, max_length=255)
     description: Optional[str] = Field(default=None, max_length=999)
-    member_ids: Optional[List[uuid.UUID]]
-    repository_ids: Optional[List[uuid.UUID]]
-    node_ids: Optional[List[uuid.UUID]]
 
 
 class ProjectCreate(ProjectBase):
-    pass
+    member_ids: List[uuid.UUID] = Field(default_factory=list)
+    repository_ids: List[uuid.UUID] = Field(default_factory=list)
+    node_ids: List[uuid.UUID] = Field(default_factory=list)
+    repository_urls: Optional[List[str]] = None
 
 
-class ProjectUpdate(ProjectBase):
+class ProjectUpdate(SQLModel):
     name: Optional[str] = Field(default=None, max_length=255)
+    description: Optional[str] = Field(default=None, max_length=999)
+    member_ids: Optional[List[uuid.UUID]] = None
+    repository_ids: Optional[List[uuid.UUID]] = None
+    node_ids: Optional[List[uuid.UUID]] = None
+    repository_urls: Optional[List[str]] = None
 
 
 class Project(ProjectBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
-    owner: Optional["User"] = Relationship(back_populates="projects")
+    owner: Optional["User"] = Relationship(
+        back_populates="projects",
+        sa_relationship_kwargs={"overlaps": "project_members"},
+    )
 
     members: List["User"] = Relationship(back_populates="project_members", link_model=ProjectMemberLink)
     issues: List["Issue"] = Relationship(back_populates="projects", link_model=ProjectIssueLink)
@@ -49,5 +57,5 @@ class ProjectPublic(ProjectBase):
 
 
 class ProjectsPublic(SQLModel):
-    data: list[ProjectPublic]
+    data: List[ProjectPublic]
     count: int
