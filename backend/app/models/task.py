@@ -15,8 +15,9 @@ class TaskBase(SQLModel):
     node_id: uuid.UUID | None = Field(default=None, foreign_key="node.id")
     status: str = Field(default="pending", max_length=32)  # pending/running/success/failed
     command: str | None = Field(default=None, max_length=512)  # 下发给node的命令
-    result_branch: str | None = Field(default=None, max_length=255)  # 处理结果的分支名
-    error_message: str | None = Field(default=None, max_length=2048)
+    args: str | None = Field(default=None, max_length=1024)  # 命令参数
+    result: str | None = Field(default=None, max_length=255)
+    branch_prefix: str | None = Field(default="aise", max_length=64)
 
 
 class TaskCreate(TaskBase):
@@ -27,8 +28,8 @@ class TaskUpdate(SQLModel):
     node_id: uuid.UUID | None = Field(default=None)
     status: str | None = Field(default=None, max_length=32)
     command: str | None = Field(default=None, max_length=512)
-    result_branch: str | None = Field(default=None, max_length=255)
-    error_message: str | None = Field(default=None, max_length=2048)
+    args: str | None = Field(default=None, max_length=1024)
+    branch_prefix: str | None = Field(default=None, max_length=64)
 
 
 class Task(TaskBase, table=True):
@@ -36,10 +37,12 @@ class Task(TaskBase, table=True):
     owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
     owner: Optional["User"] = Relationship(back_populates="tasks")
 
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
     started_at: datetime | None = Field(default=None)
     completed_at: datetime | None = Field(default=None)
+
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    deleted_at: datetime | None = Field(default=None, index=True)
 
 
 class TaskPublic(TaskBase):

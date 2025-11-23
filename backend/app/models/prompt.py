@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, Optional
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
@@ -9,8 +9,7 @@ if TYPE_CHECKING:
 
 class PromptBase(SQLModel):
     name: str = Field(min_length=1, max_length=255)
-    content: str = Field(max_length=5000)
-    description: Optional[str] = Field(default=None, max_length=500)
+    content: str = Field(max_length=9999)
     tags: Optional[str] = Field(default=None, max_length=255)
 
 
@@ -20,8 +19,7 @@ class PromptCreate(PromptBase):
 
 class PromptUpdate(SQLModel):
     name: Optional[str] = Field(default=None, min_length=1, max_length=255)
-    content: Optional[str] = Field(default=None, max_length=5000)
-    description: Optional[str] = Field(default=None, max_length=500)
+    content: Optional[str] = Field(default=None, max_length=9999)
     tags: Optional[str] = Field(default=None, max_length=255)
 
 
@@ -32,6 +30,7 @@ class Prompt(PromptBase, table=True):
 
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+    deleted_at: datetime | None = Field(default=None, index=True)
 
 
 class PromptPublic(PromptBase):

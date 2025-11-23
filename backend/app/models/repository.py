@@ -1,19 +1,20 @@
 import uuid
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, List
 from datetime import datetime
-from typing import Optional
 from sqlmodel import Field, Relationship, SQLModel
+
+from .common import ProjectRepositoryLink
 
 if TYPE_CHECKING:
     from .user import User
+    from .project import Project
 
 
 class RepositoryBase(SQLModel):
     name: str = Field(min_length=1, max_length=255)
-    url: str = Field(max_length=1023)
+    url: str = Field(min_length=1, max_length=1023)
     description: Optional[str] = Field(default=None, max_length=500)
-    is_public: bool = Field(default=False)
 
 
 class RepositoryCreate(RepositoryBase):
@@ -21,10 +22,9 @@ class RepositoryCreate(RepositoryBase):
 
 
 class RepositoryUpdate(SQLModel):
-    name: Optional[str] = Field(default=None, min_length=1, max_length=255)
-    url: Optional[str] = Field(default=None, max_length=500)
+    name: Optional[str] = Field(default=None, max_length=255)
+    url: Optional[str] = Field(default=None, max_length=1023)
     description: Optional[str] = Field(default=None, max_length=500)
-    is_public: Optional[bool] = None
 
 
 class Repository(RepositoryBase, table=True):
@@ -32,15 +32,16 @@ class Repository(RepositoryBase, table=True):
     owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
     owner: Optional["User"] = Relationship(back_populates="repositories")
 
+    projects: List["Project"] = Relationship(back_populates="repositories", link_model=ProjectRepositoryLink)
+
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+    deleted_at: datetime | None = Field(default=None, index=True)
 
 
 class RepositoryPublic(RepositoryBase):
     id: uuid.UUID
     owner_id: uuid.UUID
-    created_at: datetime
-    updated_at: datetime
 
 
 class RepositoriesPublic(SQLModel):

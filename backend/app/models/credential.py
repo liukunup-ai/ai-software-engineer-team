@@ -7,7 +7,7 @@ from typing import Optional
 from pydantic import ConfigDict
 from sqlmodel import Field, Relationship, SQLModel
 
-from .common import CredentialNodeLink
+from .common import NodeCredentialLink
 from .node import NodePublic
 
 if TYPE_CHECKING:
@@ -15,28 +15,28 @@ if TYPE_CHECKING:
     from .node import Node
 
 
-
 class CredentialCategory(str, Enum):
     GITHUB_COPILOT = "github-copilot"
     CURSOR = "cursor"
     CLUADE_CODE = "cluade-code"
+    ALIBABA_QODER = "alibaba-qoder"
 
 
 class CredentialBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)
+    secret: str = Field(min_length=1, max_length=255)
     category: CredentialCategory = Field(default=CredentialCategory.GITHUB_COPILOT)
-    pat: str = Field(min_length=1, max_length=255)
     is_disabled: bool = Field(default=False)
 
 
 class CredentialCreate(CredentialBase):
-    node_ids: list[uuid.UUID] = Field(default_factory=list)
+    pass
 
 
 class CredentialUpdate(CredentialBase):
     title: Optional[str] = Field(default=None, min_length=1, max_length=255)
+    secret: Optional[str] = Field(default=None, max_length=255)
     category: Optional[CredentialCategory] = Field(default=None)
-    pat: Optional[str] = Field(default=None, max_length=255)
     is_disabled: Optional[bool] = Field(default=None)
     node_ids: Optional[list[uuid.UUID]] = None
 
@@ -46,10 +46,11 @@ class Credential(CredentialBase, table=True):
     owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
     owner: Optional["User"] = Relationship(back_populates="credentials")
 
-    nodes: List["Node"] = Relationship(back_populates="credentials", link_model=CredentialNodeLink)
+    nodes: List["Node"] = Relationship(back_populates="credentials", link_model=NodeCredentialLink)
 
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+    deleted_at: datetime | None = Field(default=None, index=True)
 
 
 class CredentialPublic(CredentialBase):

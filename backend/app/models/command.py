@@ -8,11 +8,12 @@ class CommandRequest(BaseModel):
     args: List[str] = []
 
 
-class CommandResult(BaseModel):
+class CommandResponse(BaseModel):
     """命令执行结果"""
     command: str
     args: List[str]
+
     exit_code: int
     stdout: str
     stderr: str
-    duration_ms: int
+    error_message: str = None

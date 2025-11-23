@@ -1,21 +1,30 @@
 import uuid
-from typing import TYPE_CHECKING, Optional
 from datetime import datetime
+from typing import TYPE_CHECKING, Optional, List
+
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
     from .user import User
+    from .project import Project
+    from .task import Task
 
 
 class IssueBase(SQLModel):
-    """Issue基础模型"""
     title: str = Field(min_length=1, max_length=255)
-    description: str | None = Field(default=None, max_length=2048)
-    repository_url: str | None = Field(default=None, max_length=512)
-    issue_number: int | None = Field(default=None)
-    status: str = Field(default="pending", max_length=32)  # pending/processing/pending_merge/merged/terminated
+    content: str | None = Field(default=None, max_length=2048)
     priority: int = Field(default=0)  # 优先级，数字越大越优先
-    assigned_node_id: uuid.UUID | None = Field(default=None)  # 分配给哪个节点
+    status: str = Field(default="pending", max_length=32)  # pending/processing/pending_merge/merged/terminated
+    dependency_issue_ids: List[uuid.UUID] = Field(default_factory=list)
+
+
+class IssueDependencyLink(SQLModel, table=True):
+    issue_id: uuid.UUID = Field(foreign_key="issue.id", primary_key=True, ondelete="CASCADE")
+    depends_on_issue_id: uuid.UUID = Field(
+        foreign_key="issue.id",
+        primary_key=True,
+        ondelete="CASCADE",
+    )
 
 
 class IssueCreate(IssueBase):
@@ -23,13 +32,11 @@ class IssueCreate(IssueBase):
 
 
 class IssueUpdate(SQLModel):
-    title: str | None = Field(default=None, min_length=1, max_length=255)
-    description: str | None = Field(default=None, max_length=2048)
-    repository_url: str | None = Field(default=None, max_length=512)
-    issue_number: int | None = Field(default=None)
-    status: str | None = Field(default=None, max_length=32)
-    priority: int | None = Field(default=None)
-    assigned_node_id: uuid.UUID | None = Field(default=None)
+    title: Optional[str] = Field(default=None, max_length=255)
+    content: Optional[str] = Field(default=None, max_length=2048)
+    priority: Optional[int] = Field(default=None)
+    status: Optional[str] = Field(default=None, max_length=32)
+    dependency_issue_ids: Optional[List[uuid.UUID]] = None
 
 
 class Issue(IssueBase, table=True):
@@ -37,12 +44,15 @@ class Issue(IssueBase, table=True):
     owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
     owner: Optional["User"] = Relationship(back_populates="issues")
 
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    project: Optional["Project"] = Relationship(back_populates="issues")
+    tasks: list["Task"] = Relationship(back_populates="issue")
+
     started_at: datetime | None = Field(default=None)
     completed_at: datetime | None = Field(default=None)
-    error_message: str | None = Field(default=None, max_length=1024)
-    result_branch: str | None = Field(default=None, max_length=255)  # 处理结果的分支名
+
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    deleted_at: datetime | None = Field(default=None, index=True)
 
 
 class IssuePublic(IssueBase):
@@ -54,6 +64,7 @@ class IssuePublic(IssueBase):
     completed_at: datetime | None = None
     error_message: str | None = None
     result_branch: str | None = None
+    dependency_issue_ids: list[uuid.UUID] = Field(default_factory=list)
 
 
 class IssuesPublic(SQLModel):

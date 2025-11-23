@@ -53,6 +53,7 @@ class User(UserBase, table=True):
     hashed_password: str
 
     projects: List["Project"] = Relationship(back_populates="owner", cascade_delete=True)
+    project_members: List["Project"] = Relationship(back_populates="members", cascade_delete=True)
     repositories: List["Repository"] = Relationship(back_populates="owner", cascade_delete=True)
     issues: List["Issue"] = Relationship(back_populates="owner", cascade_delete=True)
     nodes: List["Node"] = Relationship(back_populates="owner", cascade_delete=True)
@@ -62,6 +63,8 @@ class User(UserBase, table=True):
 
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+    deleted_at: datetime | None = Field(default=None, index=True)
+
 
 class UserPublic(UserBase):
     id: uuid.UUID
